@@ -275,9 +275,9 @@ export default function DashboardScreen() {
                 </Text>
               </Pressable>
             </View>
-            {dashboard.criticalItems.slice(0, 5).map((item) => (
+            {dashboard.criticalItems.slice(0, 5).map((item, index) => (
               <CriticalItemRow
-                key={item.product.id}
+                key={`${item.product.id}-${index}`}
                 name={item.product.name}
                 daysRemaining={item.daysRemaining}
                 status={item.status}
