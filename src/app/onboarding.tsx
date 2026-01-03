@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { Building2, MapPin, ArrowRight } from "lucide-react-native";
+import { Building2, MapPin, ArrowRight, X } from "lucide-react-native";
 import { api } from "@/lib/api";
 import { LinearGradient } from "expo-linear-gradient";
 import type { CreateOrganizationResponse } from "@/shared/contracts";
@@ -51,6 +51,15 @@ export default function OnboardingScreen() {
           paddingHorizontal: 24,
         }}
       >
+        {/* Close/Cancel Button */}
+        <Pressable
+          onPress={() => router.back()}
+          className="absolute top-14 right-4 w-10 h-10 rounded-full bg-white/20 items-center justify-center active:bg-white/30"
+          style={{ zIndex: 10 }}
+        >
+          <X size={22} color="white" />
+        </Pressable>
+
         <Text className="text-white text-2xl font-bold mb-2">
           Set Up Your Organization
         </Text>
