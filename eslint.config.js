@@ -4,29 +4,32 @@ const expoConfig = require("eslint-config-expo/flat");
 const pluginQuery = require("@tanstack/eslint-plugin-query");
 
 module.exports = defineConfig([
-  expoConfig,
   {
     ignores: [
+      "dist/**",
       "**/dist/**",
+      "backend/generated/**",
+      "backend/generated/prisma/**",
       "**/backend/generated/**",
       "**/backend/prisma/**",
-      "backend/generated/**",
-      "backend/prisma/**",
+      "backend/prisma/migrations/**",
       "backend/node_modules/**",
-      "backend/src/generated/**",
       "**/node_modules/**",
       "node_modules/**",
-      "**/.expo/**",
       ".expo/**",
-      "**/.expo-shared/**",
+      "**/.expo/**",
       ".expo-shared/**",
-      "**/patches/**",
+      "**/.expo-shared/**",
       "patches/**",
+      "**/patches/**",
       "bun.lock",
       "eslint.config.js",
       "nativewind-env.d.ts",
       "rootStore.example.ts",
     ],
+  },
+  expoConfig,
+  {
     settings: {
       "import/resolver": {
         typescript: {

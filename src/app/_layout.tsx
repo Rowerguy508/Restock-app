@@ -24,6 +24,14 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ presentation: 'modal' }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen
+          name="onboarding"
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            gestureEnabled: false,
+          }}
+        />
       </Stack>
     </ThemeProvider>
   );

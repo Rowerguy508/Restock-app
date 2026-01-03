@@ -9,6 +9,15 @@ import { auth } from "./auth";
 import { env } from "./env";
 import { uploadRouter } from "./routes/upload";
 import { sampleRouter } from "./routes/sample";
+import { meRouter } from "./routes/me";
+import { onboardingRouter } from "./routes/onboarding";
+import { locationsRouter } from "./routes/locations";
+import { productsRouter } from "./routes/products";
+import { suppliersRouter } from "./routes/suppliers";
+import { stockRouter } from "./routes/stock";
+import { ordersRouter } from "./routes/orders";
+import { alertsRouter } from "./routes/alerts";
+import { dashboardRouter } from "./routes/dashboard";
 import { type AppType } from "./types";
 import { db } from "./db";
 
@@ -67,6 +76,34 @@ app.route("/api/upload", uploadRouter);
 
 console.log("📝 Mounting sample routes at /api/sample");
 app.route("/api/sample", sampleRouter);
+
+// ReStocka routes
+console.log("👤 Mounting me routes at /api/me");
+app.route("/api/me", meRouter);
+
+console.log("🚀 Mounting onboarding routes at /api/onboarding");
+app.route("/api/onboarding", onboardingRouter);
+
+console.log("📍 Mounting locations routes at /api/locations");
+app.route("/api/locations", locationsRouter);
+
+console.log("📦 Mounting products routes at /api/products");
+app.route("/api/products", productsRouter);
+
+console.log("🏭 Mounting suppliers routes at /api/suppliers");
+app.route("/api/suppliers", suppliersRouter);
+
+console.log("📊 Mounting stock routes at /api/stock");
+app.route("/api/stock", stockRouter);
+
+console.log("🛒 Mounting orders routes at /api/orders");
+app.route("/api/orders", ordersRouter);
+
+console.log("🔔 Mounting alerts routes at /api/alerts");
+app.route("/api/alerts", alertsRouter);
+
+console.log("📈 Mounting dashboard routes at /api/dashboard");
+app.route("/api/dashboard", dashboardRouter);
 
 // Health check endpoint
 // Used by load balancers and monitoring tools to verify service is running
