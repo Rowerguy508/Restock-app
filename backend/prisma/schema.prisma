@@ -1,0 +1,310 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// AUTH TABLES (Better Auth)
+// ============================================
+
+model User {
+  id            String    @id
+  email         String    @unique
+  name          String?
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  // ReStocka relations
+  membership Membership?
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("verification")
+}
+
+// ============================================
+// RESTOCKA CORE TABLES
+// ============================================
+
+// Organization represents a restaurant business (can have multiple locations)
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  locations   Location[]
+  memberships Membership[]
+  products    Product[]
+  suppliers   Supplier[]
+  alerts      Alert[]
+  auditLogs   AuditLog[]
+
+  @@map("organization")
+}
+
+// Location represents a physical restaurant location
+model Location {
+  id             String       @id @default(cuid())
+  name           String
+  address        String?
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Relations
+  stockLevels    StockLevel[]
+  purchaseOrders PurchaseOrder[]
+  memberships    Membership[]
+  alerts         Alert[]
+  auditLogs      AuditLog[]
+
+  @@map("location")
+}
+
+// Membership links users to organizations with roles
+// OWNER: Full access to organization
+// MANAGER: Limited to one location, view-only + delivery confirmation
+model Membership {
+  id             String       @id @default(cuid())
+  userId         String       @unique
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  role           String       @default("MANAGER") // OWNER or MANAGER
+  locationId     String? // Required for MANAGER role
+  location       Location?    @relation(fields: [locationId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("membership")
+}
+
+// Product catalog (unit-based)
+model Product {
+  id             String       @id @default(cuid())
+  name           String
+  sku            String? // Stock Keeping Unit
+  unit           String       @default("unit") // unit, kg, liter, case, etc.
+  category       String? // Produce, Meat, Dairy, Beverages, etc.
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Relations
+  stockLevels        StockLevel[]
+  reorderRules       ReorderRule[]
+  purchaseOrderItems PurchaseOrderItem[]
+
+  @@unique([organizationId, sku])
+  @@map("product")
+}
+
+// Supplier information
+model Supplier {
+  id             String       @id @default(cuid())
+  name           String
+  contactName    String?
+  phone          String?
+  email          String?
+  address        String?
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // V2 placeholder fields
+  deliverySlaHours Int? // Expected delivery time in hours
+
+  // Relations
+  reorderRules   ReorderRule[]
+  purchaseOrders PurchaseOrder[]
+
+  @@map("supplier")
+}
+
+// Stock level per product per location
+model StockLevel {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  locationId String
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  onHand     Float    @default(0) // Current quantity in stock
+  dailyUsage Float    @default(0) // Average daily usage
+  updatedAt  DateTime @updatedAt
+
+  @@unique([productId, locationId])
+  @@map("stock_level")
+}
+
+// Reorder rules define automation behavior
+model ReorderRule {
+  id             String   @id @default(cuid())
+  productId      String
+  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  supplierId     String
+  supplier       Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  safetyDays     Int      @default(3) // Trigger reorder when days_remaining < safety_days
+  reorderQty     Float    @default(1) // Quantity to order
+  automationMode String   @default("MANUAL") // MANUAL, ASSISTED, AUTO, EMERGENCY
+  priceCap       Float? // Maximum price per unit
+  maxSpend       Float? // Maximum spend per order
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([productId, supplierId])
+  @@map("reorder_rule")
+}
+
+// Purchase Order
+model PurchaseOrder {
+  id             String    @id @default(cuid())
+  orderNumber    String    @unique
+  locationId     String
+  location       Location  @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  supplierId     String
+  supplier       Supplier  @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  status         String    @default("DRAFT") // DRAFT, SENT, DELIVERED, NOT_DELIVERED, CANCELLED
+  totalAmount    Float?
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  sentAt         DateTime?
+  deliveredAt    DateTime?
+  confirmedById  String? // User who confirmed delivery
+  confirmPhoto   String? // Photo URL of delivery confirmation
+
+  // Relations
+  items PurchaseOrderItem[]
+
+  @@map("purchase_order")
+}
+
+// Purchase Order Line Items
+model PurchaseOrderItem {
+  id              String        @id @default(cuid())
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  productId       String
+  product         Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity        Float
+  unitPrice       Float?
+  createdAt       DateTime      @default(now())
+
+  @@map("purchase_order_item")
+}
+
+// Alerts for owners
+model Alert {
+  id             String       @id @default(cuid())
+  type           String // LOW_STOCK, DRAFT_PO_PENDING, EMERGENCY_REORDER, DELIVERY_NOT_CONFIRMED, DELIVERY_FAILED
+  severity       String       @default("INFO") // INFO, WARN, CRIT
+  title          String
+  message        String
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  locationId     String?
+  location       Location?    @relation(fields: [locationId], references: [id])
+  isRead         Boolean      @default(false)
+  isDismissed    Boolean      @default(false)
+  relatedId      String? // ID of related entity (PO, Product, etc.)
+  relatedType    String? // Type of related entity
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("alert")
+}
+
+// Audit log for all system actions
+model AuditLog {
+  id             String       @id @default(cuid())
+  action         String // REORDER_CHECK, PO_CREATED, PO_SENT, DELIVERY_CONFIRMED, etc.
+  entityType     String // product, purchase_order, stock_level, etc.
+  entityId       String
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  locationId     String?
+  location       Location?    @relation(fields: [locationId], references: [id])
+  userId         String? // null for system actions
+  details        String? // JSON string with additional details
+  createdAt      DateTime     @default(now())
+
+  @@map("audit_log")
+}
+
+// ============================================
+// V2 PLACEHOLDERS (DO NOT IMPLEMENT YET)
+// ============================================
+
+// Feature flags for future features
+model FeatureFlag {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  enabled   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("feature_flag")
+}
