@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,11 +8,11 @@ import {
   RefreshControl,
 } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { Package, ChevronRight } from "lucide-react-native";
+import { useRouter } from "expo-router";
+import { Package, Plus, Edit3 } from "lucide-react-native";
 import { api } from "@/lib/api";
 import { useSession } from "@/lib/useSession";
 import type { GetStockResponse, GetLocationsResponse, GetMeResponse } from "@/shared/contracts";
-import { useState } from "react";
 
 const statusColors: Record<string, { bg: string; text: string; label: string }> = {
   OK: { bg: "#D1FAE5", text: "#059669", label: "In Stock" },
@@ -22,6 +22,7 @@ const statusColors: Record<string, { bg: string; text: string; label: string }> 
 };
 
 export default function InventoryScreen() {
+  const router = useRouter();
   const { data: session } = useSession();
   const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
 
@@ -50,10 +51,12 @@ export default function InventoryScreen() {
     enabled: !!locationId,
   });
 
+  const isOwner = meData?.membership?.role === "OWNER";
+
   if (!session?.user || !meData?.membership) {
     return (
       <View className="flex-1 bg-slate-50 items-center justify-center">
-        <Text className="text-slate-500">Please sign in to view inventory</Text>
+        <ActivityIndicator size="large" color="#0D9488" />
       </View>
     );
   }
@@ -144,17 +147,35 @@ export default function InventoryScreen() {
               No Products Yet
             </Text>
             <Text className="text-slate-500 text-center mt-2">
-              Add products in Settings to start tracking inventory.
+              Add products to start tracking inventory.
             </Text>
+            {isOwner && (
+              <Pressable
+                onPress={() => router.push("/add-product")}
+                className="bg-teal-600 rounded-xl px-6 py-3 mt-4 flex-row items-center active:bg-teal-700"
+              >
+                <Plus size={18} color="white" />
+                <Text className="text-white font-semibold ml-2">Add Product</Text>
+              </Pressable>
+            )}
           </View>
         ) : (
           <View className="px-4 py-4">
             {stockData?.items.map((item) => {
               const status = statusColors[item.status] ?? statusColors.OK;
               return (
-                <View
+                <Pressable
                   key={item.product.id}
-                  className="bg-white rounded-xl p-4 mb-3 border border-slate-100"
+                  onPress={() => {
+                    if (isOwner && locationId) {
+                      router.push({
+                        pathname: "/edit-stock",
+                        params: { locationId, productId: item.product.id },
+                      });
+                    }
+                  }}
+                  disabled={!isOwner}
+                  className="bg-white rounded-xl p-4 mb-3 border border-slate-100 active:bg-slate-50"
                 >
                   <View className="flex-row items-center justify-between">
                     <View className="flex-1 mr-3">
@@ -167,16 +188,23 @@ export default function InventoryScreen() {
                         </Text>
                       )}
                     </View>
-                    <View
-                      className="px-3 py-1.5 rounded-lg"
-                      style={{ backgroundColor: status.bg }}
-                    >
-                      <Text
-                        className="text-xs font-semibold"
-                        style={{ color: status.text }}
+                    <View className="flex-row items-center">
+                      <View
+                        className="px-3 py-1.5 rounded-lg"
+                        style={{ backgroundColor: status.bg }}
                       >
-                        {status.label}
-                      </Text>
+                        <Text
+                          className="text-xs font-semibold"
+                          style={{ color: status.text }}
+                        >
+                          {status.label}
+                        </Text>
+                      </View>
+                      {isOwner && (
+                        <View className="ml-2">
+                          <Edit3 size={16} color="#94A3B8" />
+                        </View>
+                      )}
                     </View>
                   </View>
 
@@ -211,9 +239,22 @@ export default function InventoryScreen() {
                       </Text>
                     </View>
                   </View>
-                </View>
+                </Pressable>
               );
             })}
+
+            {/* Add Product Button for Owner */}
+            {isOwner && (
+              <Pressable
+                onPress={() => router.push("/add-product")}
+                className="bg-white rounded-xl p-4 mb-3 border border-dashed border-slate-300 flex-row items-center justify-center active:bg-slate-50"
+              >
+                <Plus size={20} color="#0D9488" />
+                <Text className="text-teal-600 font-semibold ml-2">
+                  Add New Product
+                </Text>
+              </Pressable>
+            )}
           </View>
         )}
       </ScrollView>

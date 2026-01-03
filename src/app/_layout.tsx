@@ -42,6 +42,34 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
             options={{ headerShown: false }}
           />
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          <Stack.Screen
+            name="add-product"
+            options={{
+              headerShown: false,
+              presentation: 'modal',
+            }}
+          />
+          <Stack.Screen
+            name="add-supplier"
+            options={{
+              headerShown: false,
+              presentation: 'modal',
+            }}
+          />
+          <Stack.Screen
+            name="create-order"
+            options={{
+              headerShown: false,
+              presentation: 'modal',
+            }}
+          />
+          <Stack.Screen
+            name="edit-stock"
+            options={{
+              headerShown: false,
+              presentation: 'modal',
+            }}
+          />
         </Stack>
       </AuthGate>
     </ThemeProvider>

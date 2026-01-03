@@ -67,10 +67,15 @@ This system automates replenishment with rule-based ordering, keeping businesses
 │   │   │   ├── orders.tsx
 │   │   │   ├── alerts.tsx
 │   │   │   └── settings.tsx
-│   │   ├── login.tsx
-│   │   ├── onboarding.tsx
+│   │   ├── login.tsx        # Login/signup screen
+│   │   ├── onboarding.tsx   # Business setup
+│   │   ├── add-product.tsx  # Add new product
+│   │   ├── add-supplier.tsx # Add new supplier
+│   │   ├── create-order.tsx # Create purchase order
+│   │   ├── edit-stock.tsx   # Edit stock levels
 │   │   └── _layout.tsx
 │   ├── components/
+│   │   └── AuthGate.tsx     # Auth flow controller
 │   └── lib/
 │       ├── api.ts           # API client
 │       ├── authClient.ts    # Auth client
@@ -163,6 +168,20 @@ This system automates replenishment with rule-based ordering, keeping businesses
 - **Pull-to-refresh**: All list screens support pull-down to refresh
 - **Clear error states**: Form errors displayed inline, not as alerts
 - **Loading indicators**: Activity indicators during async operations
+
+## Owner Features
+
+- **Add Products**: Create products with name, SKU, unit, and category
+- **Add Suppliers**: Create suppliers with contact details
+- **Create Purchase Orders**: Multi-step wizard to create orders
+- **Edit Stock Levels**: Tap any inventory item to update on-hand quantity and daily usage
+- **View All Locations**: Access all locations in the organization
+
+## Manager Features
+
+- **View Inventory**: See stock levels for assigned location (read-only)
+- **Confirm Deliveries**: Mark orders as delivered or not delivered
+- **View Alerts**: See location-specific alerts (read-only)
 
 ## App Flow
 
