@@ -158,10 +158,17 @@ This system automates replenishment with rule-based ordering, keeping businesses
 
 ## UX Features
 
-- **Cancel/Close buttons**: All forms and modal screens have X buttons so users can easily back out
+- **Gated access**: Users must sign in and set up their business before accessing the main app
+- **Sign out option**: Available on onboarding screen to switch accounts
 - **Pull-to-refresh**: All list screens support pull-down to refresh
 - **Clear error states**: Form errors displayed inline, not as alerts
 - **Loading indicators**: Activity indicators during async operations
+
+## App Flow
+
+1. **Login Screen** - First screen users see. Sign in or create account.
+2. **Onboarding** - After login, new users create their business and first location.
+3. **Main App (Tabs)** - Only accessible after login + business setup complete.
 
 ## Getting Started
 

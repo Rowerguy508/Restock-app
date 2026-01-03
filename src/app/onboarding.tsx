@@ -10,14 +10,13 @@ import {
   ScrollView,
 } from "react-native";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
-import { Building2, MapPin, ArrowRight, X } from "lucide-react-native";
+import { Building2, MapPin, ArrowRight, LogOut } from "lucide-react-native";
 import { api } from "@/lib/api";
+import { authClient } from "@/lib/authClient";
 import { LinearGradient } from "expo-linear-gradient";
 import type { CreateOrganizationResponse } from "@/shared/contracts";
 
 export default function OnboardingScreen() {
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const [organizationName, setOrganizationName] = useState("");
@@ -34,7 +33,15 @@ export default function OnboardingScreen() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-      router.replace("/");
+      // AuthGate will handle navigation
+    },
+  });
+
+  const signOutMutation = useMutation({
+    mutationFn: () => authClient.signOut(),
+    onSuccess: () => {
+      queryClient.clear();
+      // AuthGate will handle navigation back to login
     },
   });
 
@@ -51,17 +58,19 @@ export default function OnboardingScreen() {
           paddingHorizontal: 24,
         }}
       >
-        {/* Close/Cancel Button */}
+        {/* Sign Out Button - lets users switch accounts */}
         <Pressable
-          onPress={() => router.back()}
-          className="absolute top-14 right-4 w-10 h-10 rounded-full bg-white/20 items-center justify-center active:bg-white/30"
+          onPress={() => signOutMutation.mutate()}
+          disabled={signOutMutation.isPending}
+          className="absolute top-14 right-4 flex-row items-center px-3 py-2 rounded-full bg-white/20 active:bg-white/30"
           style={{ zIndex: 10 }}
         >
-          <X size={22} color="white" />
+          <LogOut size={16} color="white" />
+          <Text className="text-white text-sm ml-1.5">Sign Out</Text>
         </Pressable>
 
         <Text className="text-white text-2xl font-bold mb-2">
-          Set Up Your Organization
+          Set Up Your Business
         </Text>
         <Text className="text-slate-300 text-base">
           Create your restaurant organization to get started with ReStocka.
@@ -78,7 +87,7 @@ export default function OnboardingScreen() {
             <View className="flex-row items-center mb-2">
               <Building2 size={18} color="#64748B" />
               <Text className="text-sm font-medium text-slate-700 ml-2">
-                Organization Name
+                Business Name
               </Text>
             </View>
             <TextInput
@@ -156,7 +165,7 @@ export default function OnboardingScreen() {
             ) : (
               <>
                 <Text className="text-white font-semibold text-base mr-2">
-                  Create Organization
+                  Get Started
                 </Text>
                 <ArrowRight size={18} color="white" />
               </>

@@ -132,106 +132,9 @@ function CriticalItemRow({
   );
 }
 
-function OnboardingPrompt({ onPress }: { onPress: () => void }) {
-  return (
-    <View className="flex-1 bg-slate-50">
-      <LinearGradient
-        colors={["#0F172A", "#1E3A5F"]}
-        style={{
-          paddingTop: 60,
-          paddingBottom: 40,
-          paddingHorizontal: 24,
-          borderBottomLeftRadius: 32,
-          borderBottomRightRadius: 32,
-        }}
-      >
-        <Text className="text-white text-3xl font-bold mb-2">
-          Welcome to ReStocka
-        </Text>
-        <Text className="text-slate-300 text-base">
-          Auto-replenishment for your restaurant
-        </Text>
-      </LinearGradient>
-
-      <View className="flex-1 px-6 pt-8">
-        <View className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-          <Text className="text-lg font-bold text-slate-900 mb-2">
-            Get Started
-          </Text>
-          <Text className="text-slate-500 mb-6">
-            Set up your organization to start managing inventory and
-            auto-replenishment for your restaurant.
-          </Text>
-
-          <Pressable
-            onPress={onPress}
-            className="bg-teal-600 rounded-xl py-4 items-center active:bg-teal-700"
-          >
-            <Text className="text-white font-semibold text-base">
-              Create Organization
-            </Text>
-          </Pressable>
-        </View>
-
-        <View className="mt-6 space-y-4">
-          <View className="flex-row items-center">
-            <View className="w-8 h-8 rounded-full bg-teal-100 items-center justify-center mr-3">
-              <Text className="text-teal-600 font-bold">1</Text>
-            </View>
-            <Text className="text-slate-600">Create your organization</Text>
-          </View>
-          <View className="flex-row items-center mt-3">
-            <View className="w-8 h-8 rounded-full bg-slate-100 items-center justify-center mr-3">
-              <Text className="text-slate-400 font-bold">2</Text>
-            </View>
-            <Text className="text-slate-400">Add products & suppliers</Text>
-          </View>
-          <View className="flex-row items-center mt-3">
-            <View className="w-8 h-8 rounded-full bg-slate-100 items-center justify-center mr-3">
-              <Text className="text-slate-400 font-bold">3</Text>
-            </View>
-            <Text className="text-slate-400">Set up reorder rules</Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-}
-
-function LoginPrompt({ onPress }: { onPress: () => void }) {
-  return (
-    <View className="flex-1 bg-slate-50">
-      <LinearGradient
-        colors={["#0F172A", "#1E3A5F"]}
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          paddingHorizontal: 24,
-        }}
-      >
-        <Package size={64} color="#0D9488" />
-        <Text className="text-white text-3xl font-bold mt-6 mb-2 text-center">
-          ReStocka
-        </Text>
-        <Text className="text-slate-300 text-base text-center mb-8">
-          Auto-replenishment for restaurants
-        </Text>
-
-        <Pressable
-          onPress={onPress}
-          className="bg-teal-600 rounded-xl py-4 px-12 items-center active:bg-teal-700"
-        >
-          <Text className="text-white font-semibold text-base">Sign In</Text>
-        </Pressable>
-      </LinearGradient>
-    </View>
-  );
-}
-
 export default function DashboardScreen() {
   const router = useRouter();
-  const { data: session, isPending: sessionLoading } = useSession();
+  const { data: session } = useSession();
 
   const { data: meData, isLoading: meLoading } = useQuery({
     queryKey: ["me"],
@@ -251,23 +154,13 @@ export default function DashboardScreen() {
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
-  // Show login prompt if not authenticated
-  if (!sessionLoading && !session?.user) {
-    return <LoginPrompt onPress={() => router.push("/login")} />;
-  }
-
-  // Show loading state
-  if (sessionLoading || meLoading) {
+  // Show loading state while data loads
+  if (meLoading || !meData?.membership) {
     return (
       <View className="flex-1 bg-slate-50 items-center justify-center">
         <ActivityIndicator size="large" color="#0D9488" />
       </View>
     );
-  }
-
-  // Show onboarding if no organization
-  if (!meData?.membership) {
-    return <OnboardingPrompt onPress={() => router.push("/onboarding")} />;
   }
 
   const isOwner = meData.membership.role === "OWNER";
