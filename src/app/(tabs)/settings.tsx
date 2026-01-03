@@ -18,6 +18,7 @@ import {
   Plus,
   ShoppingCart,
   Settings2,
+  Users,
 } from "lucide-react-native";
 import { api } from "@/lib/api";
 import { useSession } from "@/lib/useSession";
@@ -210,6 +211,13 @@ export default function SettingsScreen() {
               value={locationsData?.locations.length ?? 0}
               showArrow={false}
             />
+            {isOwner && (
+              <SettingsRow
+                icon={Users}
+                label="Team Members"
+                onPress={() => router.push("/team")}
+              />
+            )}
           </SettingsSection>
         )}
 

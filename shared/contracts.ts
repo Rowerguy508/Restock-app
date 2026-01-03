@@ -458,6 +458,46 @@ export const inviteTeamMemberRequestSchema = z.object({
 });
 export type InviteTeamMemberRequest = z.infer<typeof inviteTeamMemberRequestSchema>;
 
+// GET /api/team - List team members
+export const teamMemberSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  email: z.string(),
+  name: z.string().nullable(),
+  role: z.enum(["OWNER", "MANAGER"]),
+  locationId: z.string().nullable(),
+  locationName: z.string().nullable(),
+  createdAt: z.string(),
+});
+export type TeamMember = z.infer<typeof teamMemberSchema>;
+
+export const getTeamResponseSchema = z.object({
+  members: z.array(teamMemberSchema),
+});
+export type GetTeamResponse = z.infer<typeof getTeamResponseSchema>;
+
+// POST /api/team/invite response
+export const inviteTeamMemberResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  member: teamMemberSchema.optional(),
+});
+export type InviteTeamMemberResponse = z.infer<typeof inviteTeamMemberResponseSchema>;
+
+// PUT /api/team/:memberId - Update team member
+export const updateTeamMemberRequestSchema = z.object({
+  role: z.enum(["OWNER", "MANAGER"]).optional(),
+  locationId: z.string().nullable().optional(),
+});
+export type UpdateTeamMemberRequest = z.infer<typeof updateTeamMemberRequestSchema>;
+
+// DELETE /api/team/:memberId response
+export const removeTeamMemberResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+});
+export type RemoveTeamMemberResponse = z.infer<typeof removeTeamMemberResponseSchema>;
+
 // ============================================
 // LEGACY SCHEMAS (keep for compatibility)
 // ============================================

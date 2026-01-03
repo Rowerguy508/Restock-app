@@ -98,6 +98,13 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
               presentation: 'modal',
             }}
           />
+          <Stack.Screen
+            name="team"
+            options={{
+              headerShown: false,
+              presentation: 'modal',
+            }}
+          />
         </Stack>
       </AuthGate>
     </ThemeProvider>
