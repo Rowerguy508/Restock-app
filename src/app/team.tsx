@@ -23,6 +23,7 @@ import {
   Check,
 } from "lucide-react-native";
 import { api } from "@/lib/api";
+import { useSession } from "@/lib/useSession";
 import type {
   GetTeamResponse,
   GetLocationsResponse,
@@ -111,6 +112,7 @@ function MemberCard({
 export default function TeamScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { data: session } = useSession();
 
   const [showInvite, setShowInvite] = useState(false);
   const [email, setEmail] = useState("");
@@ -192,7 +194,7 @@ export default function TeamScreen() {
     );
   };
 
-  const currentUserId = teamData?.members.find((m) => m.role === "OWNER")?.userId;
+  const currentUserId = session?.user?.id;
   const selectedLocation = locationsData?.locations.find(
     (l) => l.id === selectedLocationId
   );
