@@ -195,12 +195,26 @@ This system automates replenishment with rule-based ordering, keeping businesses
 2. Create your organization with first location
 3. Add products to your catalog
 4. Add suppliers
-5. Set up reorder rules (V2)
+5. Set up reorder rules with automation modes
 6. Monitor dashboard for stock status
+7. Run reorder checks to automate purchasing
+
+## Reorder Automation
+
+ReStocka supports four automation modes for reorder rules:
+
+- **Manual**: Creates alerts only when stock is low. You manually create orders.
+- **Assisted**: Creates draft purchase orders for your review before sending.
+- **Auto**: Automatically sends purchase orders to suppliers when stock is low.
+- **Emergency**: Immediately sends orders and creates critical alerts for urgent situations.
+
+Each rule is configured with:
+- **Safety Days**: Trigger threshold (e.g., reorder when < 3 days of stock remain)
+- **Reorder Quantity**: How much to order each time
+- **Price Cap**: Optional maximum price per unit
 
 ## V2 Features (Planned)
 
-- Reorder rules with automation modes (Manual, Assisted, Auto, Emergency)
 - WhatsApp notifications
 - Delivery SLA tracking
 - Feature flags for gradual rollout

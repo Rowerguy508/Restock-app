@@ -17,6 +17,7 @@ import {
   ChevronRight,
   Plus,
   ShoppingCart,
+  Settings2,
 } from "lucide-react-native";
 import { api } from "@/lib/api";
 import { useSession } from "@/lib/useSession";
@@ -258,6 +259,11 @@ export default function SettingsScreen() {
               label="Suppliers"
               value={suppliersData?.suppliers.length ?? 0}
               onPress={() => router.push("/add-supplier")}
+            />
+            <SettingsRow
+              icon={Settings2}
+              label="Reorder Rules"
+              onPress={() => router.push("/reorder-rules")}
             />
           </SettingsSection>
         )}

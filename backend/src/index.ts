@@ -18,6 +18,8 @@ import { stockRouter } from "./routes/stock";
 import { ordersRouter } from "./routes/orders";
 import { alertsRouter } from "./routes/alerts";
 import { dashboardRouter } from "./routes/dashboard";
+import { reorderRulesRouter } from "./routes/reorder-rules";
+import { reorderRouter } from "./routes/reorder";
 import { type AppType } from "./types";
 import { db } from "./db";
 
@@ -104,6 +106,12 @@ app.route("/api/alerts", alertsRouter);
 
 console.log("📈 Mounting dashboard routes at /api/dashboard");
 app.route("/api/dashboard", dashboardRouter);
+
+console.log("📋 Mounting reorder-rules routes at /api/reorder-rules");
+app.route("/api/reorder-rules", reorderRulesRouter);
+
+console.log("🔄 Mounting reorder routes at /api/reorder");
+app.route("/api/reorder", reorderRouter);
 
 // Health check endpoint
 // Used by load balancers and monitoring tools to verify service is running

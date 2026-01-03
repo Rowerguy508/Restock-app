@@ -70,6 +70,34 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
               presentation: 'modal',
             }}
           />
+          <Stack.Screen
+            name="reorder-rules"
+            options={{
+              headerShown: false,
+              presentation: 'modal',
+            }}
+          />
+          <Stack.Screen
+            name="add-reorder-rule"
+            options={{
+              headerShown: false,
+              presentation: 'modal',
+            }}
+          />
+          <Stack.Screen
+            name="edit-reorder-rule"
+            options={{
+              headerShown: false,
+              presentation: 'modal',
+            }}
+          />
+          <Stack.Screen
+            name="run-reorder-check"
+            options={{
+              headerShown: false,
+              presentation: 'modal',
+            }}
+          />
         </Stack>
       </AuthGate>
     </ThemeProvider>
