@@ -19,7 +19,11 @@
     const isSignup = hostname.includes('signup');
     const isApp = hostname.includes('app') || hostname.includes('login');
     
-    // Landing Page Content
+    // ========================================
+    // STYLES
+    // ========================================
+    
+    // Landing Page Styles
     const landingStyles = `
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #fff; color: #0f172a; }
@@ -125,7 +129,10 @@
         .input-group { margin-bottom: 20px; }
         input { width: 100%; padding: 14px 16px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 15px; transition: all 0.2s; background: #fff; }
         input:focus { outline: none; border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13,148,136,0.1); }
+        input.error { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.1); }
         .hint { font-size: 12px; color: #94a3b8; margin-top: 6px; }
+        .error-msg { font-size: 12px; color: #ef4444; margin-top: 6px; display: none; }
+        .error-msg.visible { display: block; }
         .btn { width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
         .btn-primary { background: #0d9488; color: white; }
         .btn-primary:hover { background: #0f766e; }
@@ -136,8 +143,21 @@
         .benefit { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
         .benefit-icon { width: 24px; height: 24px; background: #f0fdfa; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
         .benefit-text { font-size: 14px; color: #475569; }
+        .password-strength { display: flex; gap: 4px; margin-top: 8px; }
+        .strength-bar { flex: 1; height: 4px; background: #e2e8f0; border-radius: 2px; transition: background 0.2s; }
+        .strength-bar.weak { background: #ef4444; }
+        .strength-bar.medium { background: #f59e0b; }
+        .strength-bar.strong { background: #10b981; }
+        .password-requirements { margin-top: 12px; padding: 12px; background: #f8fafc; border-radius: 8px; }
+        .requirement { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b; margin-bottom: 6px; }
+        .requirement:last-child { margin-bottom: 0; }
+        .requirement.met { color: #10b981; }
+        .requirement-icon { width: 16px; height: 16px; border-radius: 50%; border: 1px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+        .requirement.met .requirement-icon { background: #10b981; border-color: #10b981; color: white; }
         footer { text-align: center; padding: 32px 0; color: #94a3b8; font-size: 13px; }
         footer a { color: #0d9488; text-decoration: none; }
+        .login-link { text-align: center; margin-top: 24px; font-size: 14px; color: #64748b; }
+        .login-link a { color: #0d9488; text-decoration: none; font-weight: 600; }
         @media (max-width: 480px) {
             .card { padding: 24px; border-radius: 16px; }
             h1 { font-size: 22px; }
@@ -152,6 +172,13 @@
         .divider-text { font-size: 13px; color: #94a3b8; }
         .demo-link { text-align: center; margin-top: 16px; font-size: 14px; color: #64748b; }
         .demo-link a { color: #0d9488; text-decoration: none; }
+        .form-footer { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .remember-me { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #475569; cursor: pointer; }
+        .remember-me input { width: auto; margin: 0; }
+        .forgot-password { font-size: 14px; color: #0d9488; text-decoration: none; }
+        .forgot-password:hover { text-decoration: underline; }
+        .error-banner { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 12px; margin-bottom: 20px; color: #dc2626; font-size: 14px; display: none; }
+        .error-banner.visible { display: block; }
     `;
     
     // App Page Styles (placeholder)
@@ -169,6 +196,10 @@
         .btn-primary { background: #0d9488; color: white; }
         .btn-primary:hover { background: #0f766e; }
     `;
+    
+    // ========================================
+    // RENDER FUNCTIONS
+    // ========================================
     
     // Render Landing Page
     function renderLanding() {
@@ -209,7 +240,7 @@
             <section class="stats">
                 <div class="container">
                     <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Restaurants</div></div>
-                    <div class="stat"><div class="stat-num">\$2M+</div><div class="stat-label">Food Costs Saved</div></div>
+                    <div class="stat"><div class="stat-num">$2M+</div><div class="stat-label">Food Costs Saved</div></div>
                     <div class="stat"><div class="stat-num">10K+</div><div class="stat-label">Hours Saved Monthly</div></div>
                 </div>
             </section>
@@ -238,7 +269,7 @@
                     <div class="pricing-grid">
                         <div class="price-card">
                             <h3>Free</h3>
-                            <div class="price">\$0<span>/forever</span></div>
+                            <div class="price">$0<span>/forever</span></div>
                             <ul class="price-features">
                                 <li>1 location</li><li>5 products</li><li>10 orders/month</li><li>Basic tracking</li>
                             </ul>
@@ -247,7 +278,7 @@
                         <div class="price-card popular">
                             <div class="popular-badge">Most Popular</div>
                             <h3>Pro</h3>
-                            <div class="price">\$29<span>/month</span></div>
+                            <div class="price">$29<span>/month</span></div>
                             <ul class="price-features">
                                 <li>3 locations</li><li>50 products</li><li>100 orders/month</li><li>Auto-reorder</li><li>Analytics</li><li>Priority support</li>
                             </ul>
@@ -255,7 +286,7 @@
                         </div>
                         <div class="price-card">
                             <h3>Business</h3>
-                            <div class="price">\$79<span>/month</span></div>
+                            <div class="price">$79<span>/month</span></div>
                             <ul class="price-features">
                                 <li>Unlimited everything</li><li>Full auto-reorder</li><li>Advanced analytics</li><li>API access</li><li>24/7 support</li>
                             </ul>
@@ -307,15 +338,25 @@
                             <div class="input-group">
                                 <label>Email Address</label>
                                 <input type="email" id="email" placeholder="you@restaurant.com" required>
+                                <p class="error-msg" id="email-error">Please enter a valid email address</p>
                             </div>
                             <div class="input-group">
                                 <label>Password</label>
-                                <input type="password" id="password" placeholder="Create a strong password" minlength="8" required>
-                                <p class="hint">At least 8 characters</p>
+                                <input type="password" id="password" placeholder="Create a strong password" minlength="8" required oninput="checkPasswordStrength(this.value)">
+                                <div class="password-strength" id="password-strength">
+                                    <div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div>
+                                </div>
+                                <p class="hint" id="password-hint">At least 8 characters</p>
+                                <div class="password-requirements" id="password-req" style="display:none;">
+                                    <div class="requirement" id="req-length"><span class="requirement-icon">✓</span> At least 8 characters</div>
+                                    <div class="requirement" id="req-number"><span class="requirement-icon">✓</span> Contains a number</div>
+                                    <div class="requirement" id="req-upper"><span class="requirement-icon">✓</span> Uppercase letter</div>
+                                </div>
                             </div>
                             <div class="input-group">
                                 <label>Restaurant Name</label>
                                 <input type="text" id="restaurantName" placeholder="e.g., La Cocina Restaurant" required>
+                                <p class="error-msg" id="restaurant-error">Restaurant name is required</p>
                             </div>
                             <button type="submit" class="btn btn-primary" id="submit-btn">Continue to Step 2 →</button>
                         </form>
@@ -324,6 +365,7 @@
                             <div class="benefit"><div class="benefit-icon">✓</div><span class="benefit-text">No credit card required</span></div>
                             <div class="benefit"><div class="benefit-icon">✓</div><span class="benefit-text">Cancel anytime</span></div>
                         </div>
+                        <p class="login-link">Already have an account? <a href="https://login.restocka.app">Sign in</a></p>
                     </div>
                     <div id="step2-form" style="display:none;">
                         <h1>Add Your Location</h1>
@@ -335,7 +377,11 @@
                             </div>
                             <div class="input-group">
                                 <label>Address (Optional)</label>
-                                <input type="text" id="locationAddress" placeholder="e.g., 123 Main St">
+                                <input type="text" id="locationAddress" placeholder="e.g., 123 Main St, City, State">
+                            </div>
+                            <div class="input-group">
+                                <label>Phone Number (Optional)</label>
+                                <input type="tel" id="phone" placeholder="e.g., (555) 123-4567">
                             </div>
                             <button type="submit" class="btn btn-primary">Continue to Step 3 →</button>
                             <button type="button" class="btn btn-secondary" onclick="goBack(1)">← Back</button>
@@ -383,20 +429,90 @@
                     currentStep=step;updateProgress();
                 }
                 function goBack(step){showStep(step);}
+                
+                function checkPasswordStrength(password) {
+                    const bars = document.querySelectorAll('.strength-bar');
+                    const reqDiv = document.getElementById('password-req');
+                    const hint = document.getElementById('password-hint');
+                    
+                    if (password.length > 0) {
+                        reqDiv.style.display = 'block';
+                        hint.style.display = 'none';
+                    } else {
+                        reqDiv.style.display = 'none';
+                        hint.style.display = 'block';
+                    }
+                    
+                    let strength = 0;
+                    if (password.length >= 8) strength++;
+                    if (/[0-9]/.test(password)) strength++;
+                    if (/[A-Z]/.test(password)) strength++;
+                    
+                    // Update requirement indicators
+                    document.getElementById('req-length').classList.toggle('met', password.length >= 8);
+                    document.getElementById('req-number').classList.toggle('met', /[0-9]/.test(password));
+                    document.getElementById('req-upper').classList.toggle('met', /[A-Z]/.test(password));
+                    
+                    bars.forEach((bar, i) => {
+                        bar.classList.remove('weak','medium','strong');
+                        if (i < strength) {
+                            if (strength === 1) bar.classList.add('weak');
+                            else if (strength === 2) bar.classList.add('medium');
+                            else bar.classList.add('strong');
+                        }
+                    });
+                }
+                
                 async function handleSignup(e){
                     e.preventDefault();
-                    const btn=document.getElementById('submit-btn');
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+                    const restaurantName = document.getElementById('restaurantName').value;
+                    const btn = document.getElementById('submit-btn');
+                    
+                    // Basic validation
+                    if (!email.includes('@')) {
+                        document.getElementById('email').classList.add('error');
+                        document.getElementById('email-error').classList.add('visible');
+                        return;
+                    }
+                    if (password.length < 8) {
+                        document.getElementById('password').classList.add('error');
+                        return;
+                    }
+                    if (!restaurantName.trim()) {
+                        document.getElementById('restaurantName').classList.add('error');
+                        document.getElementById('restaurant-error').classList.add('visible');
+                        return;
+                    }
+                    
                     btn.disabled=true;btn.textContent='Creating Account...';
-                    await new Promise(r=>setTimeout(r,1000));
-                    localStorage.setItem('restocka_user',JSON.stringify({email:document.getElementById('email').value,restaurantName:document.getElementById('restaurantName').value}));
-                    btn.disabled=false;btn.textContent='Continue to Step 2 →';showStep(2);
+                    
+                    // Simulate API call
+                    await new Promise(r=>setTimeout(r,1500));
+                    
+                    localStorage.setItem('restocka_user',JSON.stringify({
+                        email: email,
+                        restaurantName: restaurantName
+                    }));
+                    
+                    btn.disabled=false;btn.textContent='Continue to Step 2 →';
+                    showStep(2);
                 }
+                
                 function handleStep2(e){
                     e.preventDefault();
-                    const data=JSON.parse(localStorage.getItem('restocka_user')||'{}');
-                    data.locationName=document.getElementById('locationName').value;
-                    data.locationAddress=document.getElementById('locationAddress').value;
-                    localStorage.setItem('restocka_user',JSON.stringify(data));
+                    const locationName = document.getElementById('locationName').value;
+                    if (!locationName.trim()) {
+                        document.getElementById('locationName').classList.add('error');
+                        return;
+                    }
+                    
+                    const data = JSON.parse(localStorage.getItem('restocka_user') || '{}');
+                    data.locationName = locationName;
+                    data.locationAddress = document.getElementById('locationAddress').value;
+                    data.phone = document.getElementById('phone').value;
+                    localStorage.setItem('restocka_user', JSON.stringify(data));
                     showStep(3);
                 }
             <\/script>
@@ -413,6 +529,11 @@
                 <div class="card login-card">
                     <h1>Welcome Back</h1>
                     <p class="subtitle">Sign in to access your restaurant dashboard.</p>
+                    
+                    <div class="error-banner" id="login-error">
+                        Invalid email or password. Please try again.
+                    </div>
+                    
                     <form onsubmit="handleLogin(event)">
                         <div class="input-group">
                             <label>Email Address</label>
@@ -422,8 +543,16 @@
                             <label>Password</label>
                             <input type="password" id="loginPassword" placeholder="Enter your password" required>
                         </div>
+                        <div class="form-footer">
+                            <label class="remember-me">
+                                <input type="checkbox" id="rememberMe">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
                         <button type="submit" class="btn btn-primary">Sign In</button>
                     </form>
+                    
                     <div class="divider"><div class="divider-line"></div><span class="divider-text">or</span><div class="divider-line"></div></div>
                     <p class="demo-link"><a href="https://app.restocka.app">Try the demo →</a></p>
                 </div>
@@ -433,7 +562,23 @@
                 <p style="margin-top:8px;">© 2026 Restocka. All rights reserved.</p>
             </footer>
             <script>
-                function handleLogin(e){e.preventDefault();window.location.href='https://app.restocka.app';}
+                function handleLogin(e){
+                    e.preventDefault();
+                    const email = document.getElementById('loginEmail').value;
+                    const password = document.getElementById('loginPassword').value;
+                    const errorBanner = document.getElementById('login-error');
+                    
+                    // Demo: accept any login
+                    if (email && password.length >= 4) {
+                        // Save remember me preference
+                        if (document.getElementById('rememberMe').checked) {
+                            localStorage.setItem('restocka_remember', 'true');
+                        }
+                        window.location.href = 'https://app.restocka.app';
+                    } else {
+                        errorBanner.classList.add('visible');
+                    }
+                }
             <\/script>
         \`;
     }
