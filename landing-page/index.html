@@ -21,6 +21,8 @@
         nav a:hover { color: #0d9488; }
         .nav-cta { background: #0d9488; color: white !important; padding: 10px 20px; border-radius: 8px; margin-left: 24px; }
         .nav-cta:hover { background: #0f766e; }
+        .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; padding: 8px; background: none; border: none; cursor: pointer; }
+        .mobile-menu-btn span { width: 24px; height: 2px; background: #1a1a2e; border-radius: 2px; transition: 0.3s; }
         
         /* Hero */
         .hero { padding: 160px 0 100px; text-align: center; background: linear-gradient(180deg, #f0fdfa 0%, #fff 100%); }
@@ -106,11 +108,78 @@
         footer p { margin-top: 24px; font-size: 14px; }
         
         @media (max-width: 768px) {
-            .hero h1 { font-size: 36px; }
-            .pain-grid, .features-grid, .pricing-grid, .testimonials { grid-template-columns: 1fr; }
-            .metrics { flex-direction: column; gap: 40px; }
-            nav .container { flex-direction: column; gap: 20px; }
-            nav a { margin: 0 12px; }
+            /* Typography */
+            .hero h1 { font-size: 28px; line-height: 1.2; }
+            .hero p { font-size: 16px; margin-bottom: 24px; }
+            h2 { font-size: 28px !important; }
+            p { font-size: 15px; }
+            
+            /* Navigation - Mobile */
+            nav { padding: 12px 0; }
+            nav .container { flex-direction: row; gap: 0; }
+            nav .logo { font-size: 20px; }
+            nav .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; flex-direction: column; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+            nav .nav-links.active { display: flex; }
+            nav .nav-links a { margin: 8px 0; padding: 12px; background: #f8fafc; border-radius: 8px; }
+            nav .nav-cta { margin: 12px 0 0; display: block; text-align: center; }
+            .mobile-menu-btn { display: flex; flex-direction: column; gap: 5px; padding: 8px; background: none; border: none; cursor: pointer; }
+            .mobile-menu-btn span { width: 24px; height: 2px; background: #1a1a2e; border-radius: 2px; transition: 0.3s; }
+            
+            /* Hero - Mobile */
+            .hero { padding: 120px 0 60px; }
+            .hero-buttons { flex-direction: column; gap: 12px; }
+            .hero-buttons .btn { width: 100%; justify-content: center; padding: 14px 24px; }
+            .hero-visual { margin-top: 40px; padding: 12px; }
+            .phone-mockup { max-width: 200px; padding: 8px; }
+            
+            /* Grids - Mobile */
+            .pain-grid, .features-grid, .pricing-grid, .testimonials { grid-template-columns: 1fr; gap: 20px; }
+            
+            /* Sections - Mobile */
+            .problem, .solution, .social-proof, .pricing, .cta { padding: 60px 0; }
+            .problem > .container > p, .solution > .container > p, .social-proof > .container > p, .pricing > .container > p { margin-bottom: 40px; }
+            
+            /* Pain Cards - Mobile */
+            .pain-card { padding: 24px 20px; }
+            .pain-icon { width: 56px; height: 56px; font-size: 24px; }
+            
+            /* Features - Mobile */
+            .feature-card { flex-direction: column; text-align: center; padding: 24px 20px; gap: 16px; }
+            .feature-icon { margin: 0 auto; }
+            
+            /* Metrics - Mobile */
+            .metrics { flex-direction: row; gap: 24px; flex-wrap: wrap; justify-content: center; }
+            .metric { min-width: 100px; }
+            .metric-number { font-size: 32px; }
+            
+            /* Testimonials - Mobile */
+            .testimonial { padding: 24px 20px; }
+            .testimonial-author { flex-direction: column; text-align: center; }
+            
+            /* Pricing - Mobile */
+            .pricing-card { padding: 32px 24px; }
+            .pricing-card .price { font-size: 36px; }
+            .pricing-card .price.free { font-size: 28px; }
+            .pricing-features { font-size: 13px; }
+            .pricing-features li { padding: 10px 0; }
+            
+            /* CTA - Mobile */
+            .cta h2 { font-size: 28px; }
+            .cta p { font-size: 16px; }
+            .cta .btn { width: 100%; justify-content: center; }
+            
+            /* Footer - Mobile */
+            footer { padding: 40px 20px; }
+            footer .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
+            footer a { margin: 8px; }
+        }
+        
+        @media (max-width: 480px) {
+            .container { padding: 0 16px; }
+            .hero h1 { font-size: 24px; }
+            .hero { padding: 100px 0 50px; }
+            .phone-mockup { max-width: 160px; }
+            .metric-number { font-size: 28px; }
         }
     </style>
 </head>
@@ -118,7 +187,12 @@
     <nav>
         <div class="container">
             <div class="logo">Restock<span>a</span></div>
-            <div>
+            <button class="mobile-menu-btn" onclick="toggleMenu()" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" id="navLinks">
                 <a href="#features">Features</a>
                 <a href="#pricing">Pricing</a>
                 <a href="#contact">Contact</a>
@@ -353,7 +427,7 @@
     <footer id="contact">
         <div class="container">
             <div class="logo" style="color: white; margin-bottom: 24px;">Restock<span>a</span></div>
-            <div>
+            <div class="footer-links">
                 <a href="#">About</a>
                 <a href="#">Features</a>
                 <a href="#">Pricing</a>
@@ -364,5 +438,12 @@
             <p>© 2026 Restocka. All rights reserved.</p>
         </div>
     </footer>
+    
+    <script>
+    function toggleMenu() {
+        const navLinks = document.getElementById('navLinks');
+        navLinks.classList.toggle('active');
+    }
+    </script>
 </body>
 </html>
