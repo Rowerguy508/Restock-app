@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { db } from "../db";
 import { type AppType } from "../types";
 import { inviteTeamMemberRequestSchema } from "../../../shared/contracts";
+import { getOrganizationSubscription, SUBSCRIPTION_TIERS } from "../subscription";
 
 const teamRouter = new Hono<AppType>();
 
@@ -11,6 +12,58 @@ async function isOwner(userId: string, organizationId: string): Promise<boolean>
     where: { userId },
   });
   return membership?.role === "OWNER" && membership?.organizationId === organizationId;
+}
+
+// Helper to check team member limit based on subscription tier
+async function checkTeamLimit(organizationId: string): Promise<{ allowed: boolean; error?: string; upgradeUrl?: string }> {
+  const subscription = await getOrganizationSubscription(organizationId);
+  
+  if (!subscription) {
+    // Default to FREE tier limits if no subscription found
+    const limit = SUBSCRIPTION_TIERS.FREE.limits.users;
+    
+    // If user count is at limit, deny
+    const memberCount = await db.membership.count({
+      where: { organizationId },
+    });
+    
+    if (memberCount >= limit) {
+      return {
+        allowed: false,
+        error: "Team member limit reached. Upgrade to add more team members.",
+        upgradeUrl: "/settings/subscription?upgrade=PRO",
+      };
+    }
+    return { allowed: true };
+  }
+
+  const tierLimits = SUBSCRIPTION_TIERS[subscription.tier as keyof typeof SUBSCRIPTION_TIERS];
+  
+  if (!tierLimits) {
+    return { allowed: true };
+  }
+
+  const userLimit = tierLimits.limits.users;
+
+  // -1 means unlimited
+  if (userLimit === -1) {
+    return { allowed: true };
+  }
+
+  const memberCount = await db.membership.count({
+    where: { organizationId },
+  });
+
+  if (memberCount >= userLimit) {
+    const upgradeTier = subscription.tier === "FREE" ? "PRO" : "BUSINESS";
+    return {
+      allowed: false,
+      error: `Team member limit reached (${memberCount}/${userLimit}). Upgrade to ${upgradeTier} for more team members.`,
+      upgradeUrl: `/settings/subscription?upgrade=${upgradeTier}`,
+    };
+  }
+
+  return { allowed: true };
 }
 
 // GET /api/team - List team members
@@ -76,6 +129,15 @@ teamRouter.post("/invite", async (c) => {
 
   if (!membership || membership.role !== "OWNER") {
     return c.json({ error: "Only owners can invite team members" }, 403);
+  }
+
+  // Check team member limit based on subscription tier
+  const limitCheck = await checkTeamLimit(membership.organizationId);
+  if (!limitCheck.allowed) {
+    return c.json({
+      error: limitCheck.error,
+      upgradeUrl: limitCheck.upgradeUrl,
+    }, 403);
   }
 
   const body = await c.req.json();

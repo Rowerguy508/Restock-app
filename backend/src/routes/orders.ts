@@ -2,6 +2,7 @@ import { Hono, type Context } from "hono";
 import { db } from "../db";
 import { type AppType } from "../types";
 import { createOrderRequestSchema, confirmDeliveryRequestSchema } from "@/shared/contracts";
+import { incrementOrderCount } from "../subscription";
 
 const ordersRouter = new Hono<AppType>();
 
@@ -238,6 +239,9 @@ ordersRouter.post("/", async (c) => {
       location: { select: { id: true, name: true } },
     },
   });
+
+  // Track monthly order usage for subscription limits
+  await incrementOrderCount(membership.organizationId);
 
   return c.json(formatOrder(order));
 });

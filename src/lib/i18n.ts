@@ -175,6 +175,88 @@ const es = {
   "usage.orders": "1 pedido | {count} pedidos",
 };
 
+const pt = {
+  // Common
+  "common.save": "Salvar",
+  "common.cancel": "Cancelar",
+  "common.loading": "Carregando...",
+  "common.error": "Erro",
+  "common.retry": "Tentar novamente",
+  "common.close": "Fechar",
+  "common.back": "Voltar",
+  "common.next": "Próximo",
+  "common.done": "Concluído",
+  "common.yes": "Sim",
+  "common.no": "Não",
+  "common.ok": "OK",
+  "common.upgrade": "Atualizar",
+  "common.learnMore": "Saiba mais",
+
+  // Subscription
+  "subscription.title": "Assinatura",
+  "subscription.currentPlan": "Plano Atual",
+  "subscription.trial": "Teste",
+  "subscription.trial.daysRemaining": "{days} dias restantes",
+  "subscription.trial.expired": "Teste Expirado",
+  "subscription.trial.upgradePrompt": "Atualize agora para continuar com todos os recursos.",
+  
+  "subscription.plan.free": "Gratuito",
+  "subscription.plan.free.description": "Para restaurantes que estão começando",
+  
+  "subscription.plan.pro": "Pro",
+  "subscription.plan.pro.description": "Para restaurantes em crescimento",
+  "subscription.plan.pro.mostPopular": "Mais Popular",
+  
+  "subscription.plan.business": "Negócio",
+  "subscription.plan.business.description": "Para cadeias e operações grandes",
+  
+  "subscription.pricing.perMonth": "/mês",
+  "subscription.pricing.perForever": "/para sempre",
+  
+  "subscription.features.locations": "Locais",
+  "subscription.features.products": "Produtos",
+  "subscription.features.ordersPerMonth": "Pedidos/mês",
+  "subscription.features.users": "Membros da equipe",
+  "subscription.features.unlimited": "Ilimitado",
+  
+  "subscription.features.autoReorder": "Pedido automático",
+  "subscription.features.analytics": "Análises",
+  "subscription.features.mobileApp": "Aplicativo móvel",
+  "subscription.features.prioritySupport": "Suporte prioritário",
+  "subscription.features.apiAccess": "Acesso API",
+  "subscription.features.support24_7": "Suporte 24/7",
+  
+  "subscription.cta.trial": "Começar teste grátis",
+  "subscription.cta.currentPlan": "Plano Atual",
+  "subscription.cta.upgrade": "Atualizar agora",
+  
+  "subscription.limit.reached": "Limite Atingido",
+  "subscription.limit.locations": "Você atingiu o limite de {limit} locais.",
+  "subscription.limit.products": "Você atingiu o limite de {limit} produtos.",
+  "subscription.limit.orders": "Você atingiu o limite de {limit} pedidos este mês.",
+  "subscription.limit.upgrade": "Atualize seu plano para mais.",
+  
+  "subscription.usage.title": "Uso",
+  "subscription.usage.of": "{current} de {limit}",
+  "subscription.usage.locations": "Locais usados",
+  "subscription.usage.products": "Produtos rastreados",
+  "subscription.usage.orders": "Pedidos este mês",
+  
+  "subscription.cancel.title": "Cancelar Assinatura",
+  "subscription.cancel.confirm": "Tem certeza de que deseja cancelar? Você perderá acesso aos recursos premium.",
+  "subscription.cancel.keepAccess": "Manter Acesso",
+  "subscription.cancel.confirmCancel": "Cancelar Assinatura",
+  
+  "subscription.success.upgraded": "Atualizado com sucesso para {plan}!",
+  "subscription.success.cancelled": "Assinatura cancelada",
+  "subscription.error.upgradeFailed": "Falha ao atualizar. Por favor, tente novamente.",
+  
+  // Usage
+  "usage.locations": "1 local | {count} locais",
+  "usage.products": "1 produto | {count} produtos",
+  "usage.orders": "1 pedido | {count} pedidos",
+};
+
 // ============================================
 // SUPPORTED LANGUAGES
 // ============================================
@@ -182,6 +264,7 @@ const es = {
 export const SUPPORTED_LOCALES = {
   en: "English",
   es: "Español",
+  pt: "Português (Brasil)",
 };
 
 export type Locale = keyof typeof SUPPORTED_LOCALES;
@@ -203,6 +286,9 @@ const getDeviceLocale = (): Locale => {
     "es-ES": "es",
     "es-MX": "es",
     "es-419": "es",
+    pt: "pt",
+    "pt-BR": "pt",
+    "pt-PT": "pt",
   };
   
   return localeMap[deviceLocale] ?? "en";
@@ -211,6 +297,7 @@ const getDeviceLocale = (): Locale => {
 export const i18n = new I18n({
   en,
   es,
+  pt,
 });
 
 // Initialize with device locale
