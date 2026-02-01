@@ -24,6 +24,17 @@
         .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; padding: 8px; background: none; border: none; cursor: pointer; }
         .mobile-menu-btn span { width: 24px; height: 2px; background: #0f172a; border-radius: 2px; transition: 0.3s; }
         
+        /* Language Selector */
+        .lang-selector { position: relative; margin-left: 24px; }
+        .lang-btn { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-size: 14px; font-weight: 500; color: #475569; transition: all 0.2s; }
+        .lang-btn:hover { border-color: #0d9488; color: #0d9488; }
+        .lang-dropdown { position: absolute; top: 100%; right: 0; margin-top: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); min-width: 150px; display: none; z-index: 200; overflow: hidden; }
+        .lang-dropdown.active { display: block; }
+        .lang-option { display: block; width: 100%; padding: 12px 16px; text-align: left; border: none; background: none; cursor: pointer; font-size: 14px; color: #475569; transition: all 0.2s; }
+        .lang-option:hover { background: #f0fdfa; color: #0d9488; }
+        .lang-option.active { background: #f0fdfa; color: #0d9488; font-weight: 600; }
+        .lang-flag { font-size: 16px; margin-right: 8px; }
+        
         /* Hero */
         .hero { padding: 140px 0 80px; text-align: center; background: linear-gradient(180deg, #f0fdfa 0%, #fff 100%); }
         .hero h1 { font-size: 56px; font-weight: 700; line-height: 1.1; margin-bottom: 20px; color: #0f172a; }
@@ -124,6 +135,10 @@
             nav .nav-links a { margin: 6px 0; padding: 12px; background: #f8fafc; border-radius: 10px; font-size: 14px; }
             nav .nav-cta { margin: 10px 0 0; display: block; text-align: center; }
             .mobile-menu-btn { display: flex; }
+            .lang-selector { margin: 10px 0 0; width: 100%; }
+            .lang-btn { width: 100%; justify-content: center; }
+            .lang-dropdown { position: static; margin-top: 8px; box-shadow: none; border: none; background: #f8fafc; border-radius: 10px; }
+            .lang-dropdown.active { display: block; }
             
             /* Hero - Mobile */
             .hero { padding: 120px 0 50px; }
@@ -193,10 +208,28 @@
                 <span></span>
             </button>
             <div class="nav-links" id="navLinks">
-                <a href="#features">Features</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#contact">Contact</a>
-                <a href="#" class="nav-cta">Download App</a>
+                <a href="#features" data-i18n="nav_features">Features</a>
+                <a href="#pricing" data-i18n="nav_pricing">Pricing</a>
+                <a href="#contact" data-i18n="nav_contact">Contact</a>
+                <a href="#" class="nav-cta" data-i18n="nav_download">Download App</a>
+            </div>
+            <div class="lang-selector">
+                <button class="lang-btn" onclick="toggleLang()" id="currentLang">
+                    <span class="lang-flag">🇺🇸</span>
+                    <span>EN</span>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <button class="lang-option active" onclick="setLang('en')">
+                        <span class="lang-flag">🇺🇸</span> English
+                    </button>
+                    <button class="lang-option" onclick="setLang('es')">
+                        <span class="lang-flag">🇪🇸</span> Español
+                    </button>
+                    <button class="lang-option" onclick="setLang('pt')">
+                        <span class="lang-flag">🇧🇷</span> Português
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
@@ -440,10 +473,318 @@
     </footer>
     
     <script>
-    function toggleMenu() {
-        const navLinks = document.getElementById('navLinks');
-        navLinks.classList.toggle('active');
+    // Translations data
+    const translations = {
+        en: {
+            nav_features: "Features",
+            nav_pricing: "Pricing",
+            nav_contact: "Contact",
+            nav_download: "Download App",
+            
+            hero_title: "Never Run Out of",
+            hero_title_span: "Ingredients Again",
+            hero_subtitle: "The smart inventory management app for restaurants. Track stock, auto-reorder, and save hours every week.",
+            hero_cta_primary: "Start Free Trial",
+            hero_cta_secondary: "Watch Demo",
+            hero_total_value: "Total Value",
+            hero_low_stock: "Low Stock Items",
+            
+            problem_title: "Restaurant Inventory is Broken",
+            problem_subtitle: "You're busy running your restaurant. Inventory shouldn't be another headache.",
+            pain_1_title: "Unexpected Shortages",
+            pain_1_text: "You find out you're out of a key ingredient mid-service. Dinner ruined. Customer angry.",
+            pain_2_title: "Manual Spreadsheets",
+            pain_2_text: "Hours every week counting boxes, writing lists, and trying to make sense of the chaos.",
+            pain_3_title: "Wasted Food",
+            pain_3_text: "You over-order, products expire, and money flies down the drain. Every. Single. Week.",
+            
+            solution_title: "Your Kitchen, Under Control",
+            solution_subtitle: "Smart features that save you time, money, and stress.",
+            feat_1_title: "Mobile First",
+            feat_1_text: "Count inventory right from your phone. At the warehouse, in the walk-in, anywhere.",
+            feat_2_title: "Auto-Reorder Rules",
+            feat_2_text: "Set it and forget it. Restocka automatically suggests orders when items run low.",
+            feat_3_title: "Team Management",
+            feat_3_text: "Multiple locations, multiple users. Track who's doing what across your operation.",
+            feat_4_title: "Smart Analytics",
+            feat_4_text: "Know your food costs, track waste, and optimize orders with data-driven insights.",
+            feat_5_title: "Low Stock Alerts",
+            feat_5_text: "Never be surprised. Get notified before you run out of anything critical.",
+            feat_6_title: "Easy Supplier Orders",
+            feat_6_text: "Create and send orders to suppliers directly from the app. One tap, done.",
+            
+            social_title: "Trusted by Restaurants",
+            social_subtitle: "Join hundreds of restaurants saving time and money every day.",
+            metric_1: "500+",
+            metric_1_label: "Restaurants",
+            metric_2: "$2M+",
+            metric_2_label: "Food Costs Saved",
+            metric_3: "10K+",
+            metric_3_label: "Hours Saved Monthly",
+            
+            pricing_title: "Simple, Transparent Pricing",
+            pricing_subtitle: "Start free, upgrade when you're ready. No hidden fees.",
+            
+            cta_title: "Ready to Take Control?",
+            cta_subtitle: "Start your 7-day free trial today. No credit card required.",
+            cta_btn: "Download Free",
+            
+            footer_about: "About",
+            footer_features: "Features",
+            footer_pricing: "Pricing",
+            footer_contact: "Contact",
+            footer_privacy: "Privacy",
+            footer_terms: "Terms",
+            footer_copyright: "© 2026 Restocka. All rights reserved."
+        },
+        es: {
+            nav_features: "Características",
+            nav_pricing: "Precios",
+            nav_contact: "Contacto",
+            nav_download: "Descargar App",
+            
+            hero_title: "Nunca te Quedes sin",
+            hero_title_span: "Ingredientes",
+            hero_subtitle: "La app inteligente de gestión de inventario para restaurantes. Controla stock, reordena automáticamente y ahorra horas cada semana.",
+            hero_cta_primary: "Prueba Gratis",
+            hero_cta_secondary: "Ver Demo",
+            hero_total_value: "Valor Total",
+            hero_low_stock: "Items con Stock Bajo",
+            
+            problem_title: "El Inventario de Restaurantes está Roto",
+            problem_subtitle: "Estás ocupado administrando tu restaurante. El inventario no debería ser otro dolor de cabeza.",
+            pain_1_title: "Faltantes Inesperados",
+            pain_1_text: "Te enteras que te falta un ingrediente clave a mitad del servicio. Cena arruinada. Cliente enojado.",
+            pain_2_title: "Hojas de Cálculo Manuales",
+            pain_2_text: "Horas cada semana contando cajas, haciendo listas y tratando de entender el caos.",
+            pain_3_title: "Comida Desperdiciada",
+            pain_3_text: "Sobre-ordenas, los productos vencen y el dinero se va por el desagüe. Cada. Semana.",
+            
+            solution_title: "Tu Cocina Bajo Control",
+            solution_subtitle: "Características inteligentes que te ahorran tiempo, dinero y estrés.",
+            feat_1_title: "Primero en Móvil",
+            feat_1_text: "Cuenta inventario desde tu teléfono. En la bodega, en la cámara, en cualquier lugar.",
+            feat_2_title: "Reglas de Auto-Reorden",
+            feat_2_text: "Configúralo y olvídalo. Restocka sugiere automáticamente órdenes cuando los items están bajos.",
+            feat_3_title: "Gestión de Equipo",
+            feat_3_text: "Múltiples ubicaciones, múltiples usuarios. Rastrea quién hace qué en toda tu operación.",
+            feat_4_title: "Analíticas Inteligentes",
+            feat_4_text: "Conoce tus costos de comida, rastrea desperdicios y optimiza órdenes con datos.",
+            feat_5_title: "Alertas de Stock Bajo",
+            feat_5_text: "Nunca te sorprendas. Recibe notificaciones antes de quedarte sin algo crítico.",
+            feat_6_title: "Órdenes a Proveedores",
+            feat_6_text: "Crea y envía órdenes a proveedores directamente desde la app. Un toque, listo.",
+            
+            social_title: "Confiado por Restaurantes",
+            social_subtitle: "Únete a cientos de restaurantes que ahorran tiempo y dinero cada día.",
+            metric_1: "500+",
+            metric_1_label: "Restaurantes",
+            metric_2: "$2M+",
+            metric_2_label: "Costos Ahorrados",
+            metric_3: "10K+",
+            metric_3_label: "Horas Ahorradas",
+            
+            pricing_title: "Precios Simples y Transparentes",
+            pricing_subtitle: "Empieza gratis, mejora cuando quieras. Sin costos ocultos.",
+            
+            cta_title: "¿Listo a Tomar Control?",
+            cta_subtitle: "Empieza tu prueba gratis de 7 días hoy. Sin tarjeta de crédito.",
+            cta_btn: "Descargar Gratis",
+            
+            footer_about: "Nosotros",
+            footer_features: "Características",
+            footer_pricing: "Precios",
+            footer_contact: "Contacto",
+            footer_privacy: "Privacidad",
+            footer_terms: "Términos",
+            footer_copyright: "© 2026 Restocka. Todos los derechos reservados."
+        },
+        pt: {
+            nav_features: "Recursos",
+            nav_pricing: "Preços",
+            nav_contact: "Contato",
+            nav_download: "Baixar App",
+            
+            hero_title: "Nunca Fique sem",
+            hero_title_span: "Ingredientes",
+            hero_subtitle: "O app inteligente de gestão de estoque para restaurantes. Controle estoque, reordene automaticamente e economize horas toda semana.",
+            hero_cta_primary: "Teste Grátis",
+            hero_cta_secondary: "Ver Demo",
+            hero_total_value: "Valor Total",
+            hero_low_stock: "Itens com Estoque Baixo",
+            
+            problem_title: "O Estoque de Restaurantes está Quebrado",
+            problem_subtitle: "Você está ocupado administrando seu restaurante. Estoque não deve ser mais uma dor de cabeça.",
+            pain_1_title: "Faltas Inesperadas",
+            pain_1_text: "Você descobre que está sem um ingrediente chave durante o serviço. Jantar arruinado. Cliente irritado.",
+            pain_2_title: "Planilhas Manuais",
+            pain_2_text: "Horas toda semana contando caixas, fazendo listas e tentando dar sentido ao caos.",
+            pain_3_title: "Comida Desperdiçada",
+            pain_3_text: "Você sobre-pede, produtos expiram e dinheiro vai pelo ralo. Toda. Semana.",
+            
+            solution_title: "Sua Cozinha Sob Controle",
+            solution_subtitle: "Recursos inteligentes que economizam tempo, dinheiro e estresse.",
+            feat_1_title: "Primero no Celular",
+            feat_1_text: "Conte estoque direto do seu telefone. No depósito, na câmara, em qualquer lugar.",
+            feat_2_title: "Regras de Auto-Pedido",
+            feat_2_text: "Configure e esqueca. Restocka sugere automaticamente pedidos quando itens estão baixos.",
+            feat_3_title: "Gestão de Equipe",
+            feat_3_text: "Múltiplos locais, múltiplos usuários. Rastreie quem faz o quê em toda sua operação.",
+            feat_4_title: "Analises Inteligentes",
+            feat_4_text: "Conheça seus custos de comida, rastreie desperdício e otimize pedidos com dados.",
+            feat_5_title: "Alertas de Estoque Baixo",
+            feat_5_text: "Nunca se surpreenda. Receba notificações antes de ficar sem algo crítico.",
+            feat_6_title: "Pedidos a Fornecedores",
+            feat_6_text: "Crie e envie pedidos a fornecedores direto do app. Um toque, pronto.",
+            
+            social_title: "Confiado por Restaurantes",
+            social_subtitle: "Junte-se a centenas de restaurantes economizando tempo e dinheiro todo dia.",
+            metric_1: "500+",
+            metric_1_label: "Restaurantes",
+            metric_2: "$2M+",
+            metric_2_label: "Custos Economizados",
+            metric_3: "10K+",
+            metric_3_label: "Horas Economizadas",
+            
+            pricing_title: "Preços Simples e Transparentes",
+            pricing_subtitle: "Comece grátis, faça upgrade quando quiser. Sem taxas ocultas.",
+            
+            cta_title: "Pronto para Tomar Controle?",
+            cta_subtitle: "Comece seu teste grátis de 7 dias hoje. Sem cartão de crédito.",
+            cta_btn: "Baixar Grátis",
+            
+            footer_about: "Sobre",
+            footer_features: "Recursos",
+            footer_pricing: "Preços",
+            footer_contact: "Contato",
+            footer_privacy: "Privacidade",
+            footer_terms: "Termos",
+            footer_copyright: "© 2026 Restocka. Todos os direitos reservados."
+        }
+    };
+    
+    const langFlags = { en: '🇺🇸', es: '🇪🇸', pt: '🇧🇷' };
+    const langNames = { en: 'EN', es: 'ES', pt: 'PT' };
+    let currentLang = 'en';
+    
+    // Auto-detect browser language
+    function detectLang() {
+        const browserLang = navigator.language || navigator.userLanguage;
+        if (browserLang.startsWith('es')) return 'es';
+        if (browserLang.startsWith('pt')) return 'pt';
+        if (browserLang.startsWith('en')) return 'en';
+        return 'en';
     }
+    
+    function toggleLang() {
+        document.getElementById('langDropdown').classList.toggle('active');
+    }
+    
+    function setLang(lang) {
+        currentLang = lang;
+        document.getElementById('langDropdown').classList.remove('active');
+        document.getElementById('currentLang').innerHTML = 
+            `<span class="lang-flag">${langFlags[lang]}</span><span>${langNames[lang]}</span>` +
+            `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        
+        // Update all translatable elements
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang][key]) el.textContent = translations[lang][key];
+        });
+        
+        // Update hero section
+        const heroTitle = document.querySelector('.hero h1');
+        heroTitle.innerHTML = translations[lang].hero_title + '<br><span>' + translations[lang].hero_title_span + '</span>';
+        document.querySelector('.hero p').textContent = translations[lang].hero_subtitle;
+        document.querySelectorAll('.hero-buttons .btn')[0].textContent = translations[lang].hero_cta_primary;
+        document.querySelectorAll('.hero-buttons .btn')[1].textContent = translations[lang].hero_cta_secondary;
+        document.querySelector('.phone-screen > div > div:first-child').textContent = translations[lang].hero_total_value;
+        document.querySelector('.phone-screen > div > div:nth-child(3) > div:first-child').textContent = translations[lang].hero_low_stock;
+        
+        // Update problem section
+        document.querySelector('.problem h2').textContent = translations[lang].problem_title;
+        document.querySelector('.problem > .container > p').textContent = translations[lang].problem_subtitle;
+        const painCards = document.querySelectorAll('.pain-card');
+        painCards[0].querySelector('h3').textContent = translations[lang].pain_1_title;
+        painCards[0].querySelector('p').textContent = translations[lang].pain_1_text;
+        painCards[1].querySelector('h3').textContent = translations[lang].pain_2_title;
+        painCards[1].querySelector('p').textContent = translations[lang].pain_2_text;
+        painCards[2].querySelector('h3').textContent = translations[lang].pain_3_title;
+        painCards[2].querySelector('p').textContent = translations[lang].pain_3_text;
+        
+        // Update solution section
+        document.querySelector('.solution h2').textContent = translations[lang].solution_title;
+        document.querySelector('.solution > .container > p').textContent = translations[lang].solution_subtitle;
+        const featureCards = document.querySelectorAll('.feature-card');
+        featureCards[0].querySelector('h3').textContent = translations[lang].feat_1_title;
+        featureCards[0].querySelector('p').textContent = translations[lang].feat_1_text;
+        featureCards[1].querySelector('h3').textContent = translations[lang].feat_2_title;
+        featureCards[1].querySelector('p').textContent = translations[lang].feat_2_text;
+        featureCards[2].querySelector('h3').textContent = translations[lang].feat_3_title;
+        featureCards[2].querySelector('p').textContent = translations[lang].feat_3_text;
+        featureCards[3].querySelector('h3').textContent = translations[lang].feat_4_title;
+        featureCards[3].querySelector('p').textContent = translations[lang].feat_4_text;
+        featureCards[4].querySelector('h3').textContent = translations[lang].feat_5_title;
+        featureCards[4].querySelector('p').textContent = translations[lang].feat_5_text;
+        featureCards[5].querySelector('h3').textContent = translations[lang].feat_6_title;
+        featureCards[5].querySelector('p').textContent = translations[lang].feat_6_text;
+        
+        // Update social proof section
+        document.querySelector('.social-proof h2').textContent = translations[lang].social_title;
+        document.querySelector('.social-proof > .container > p').textContent = translations[lang].social_subtitle;
+        const metrics = document.querySelectorAll('.metric');
+        metrics[0].querySelector('.metric-number').textContent = translations[lang].metric_1;
+        metrics[0].querySelector('.metric-label').textContent = translations[lang].metric_1_label;
+        metrics[1].querySelector('.metric-number').textContent = translations[lang].metric_2;
+        metrics[1].querySelector('.metric-label').textContent = translations[lang].metric_2_label;
+        metrics[2].querySelector('.metric-number').textContent = translations[lang].metric_3;
+        metrics[2].querySelector('.metric-label').textContent = translations[lang].metric_3_label;
+        
+        // Update pricing section
+        document.querySelector('.pricing h2').textContent = translations[lang].pricing_title;
+        document.querySelector('.pricing > .container > p').textContent = translations[lang].pricing_subtitle;
+        
+        // Update CTA section
+        document.querySelector('.cta h2').textContent = translations[lang].cta_title;
+        document.querySelector('.cta p').textContent = translations[lang].cta_subtitle;
+        document.querySelector('.cta .btn').textContent = translations[lang].cta_btn;
+        
+        // Update footer
+        const footerLinks = document.querySelectorAll('footer a');
+        footerLinks[0].textContent = translations[lang].footer_about;
+        footerLinks[1].textContent = translations[lang].footer_features;
+        footerLinks[2].textContent = translations[lang].footer_pricing;
+        footerLinks[3].textContent = translations[lang].footer_contact;
+        footerLinks[4].textContent = translations[lang].footer_privacy;
+        footerLinks[5].textContent = translations[lang].footer_terms;
+        document.querySelector('footer p').textContent = translations[lang].footer_copyright;
+        
+        // Update dropdown active states
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            opt.classList.toggle('active', opt.onclick.toString().includes(lang));
+        });
+        
+        // Save preference
+        localStorage.setItem('restocka_lang', lang);
+    }
+    
+    function toggleMenu() {
+        document.getElementById('navLinks').classList.toggle('active');
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedLang = localStorage.getItem('restocka_lang') || detectLang();
+        setLang(savedLang);
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.lang-selector')) {
+                document.getElementById('langDropdown').classList.remove('active');
+            }
+        });
+    });
     </script>
 </body>
 </html>
