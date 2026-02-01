@@ -5,6 +5,7 @@ import {
   createProductRequestSchema,
   updateProductRequestSchema,
 } from "@/shared/contracts";
+import { getOrganizationSubscription, SUBSCRIPTION_TIERS } from "../subscription";
 
 const productsRouter = new Hono<AppType>();
 
@@ -23,6 +24,43 @@ const requireOwner = async (c: Context<AppType>) => {
   const membership = await getMembership(c);
   if (!membership || membership.role !== "OWNER") return null;
   return membership;
+};
+
+// Helper to check product limit
+const checkProductLimit = async (organizationId: string, c: Context<AppType>) => {
+  const subscription = await getOrganizationSubscription(organizationId);
+  
+  if (!subscription || !subscription.isActive) {
+    return {
+      allowed: false,
+      error: "subscription_inactive",
+      message: "Tu suscripción no está activa",
+    };
+  }
+
+  const tierLimits = SUBSCRIPTION_TIERS[subscription.tier as keyof typeof SUBSCRIPTION_TIERS]?.limits;
+  const maxProducts = tierLimits?.products ?? -1;
+
+  if (maxProducts === -1) {
+    return { allowed: true };
+  }
+
+  const currentCount = await db.product.count({ 
+    where: { organizationId, isActive: true } 
+  });
+  
+  if (currentCount >= maxProducts) {
+    return {
+      allowed: false,
+      error: "limit_exceeded",
+      message: `Has alcanzado el límite de ${maxProducts} productos. Actualiza tu plan para más.`,
+      upgradeUrl: "/subscription",
+      current: currentCount,
+      limit: maxProducts,
+    };
+  }
+
+  return { allowed: true, current: currentCount, limit: maxProducts };
 };
 
 // GET /api/products - List products
@@ -57,6 +95,18 @@ productsRouter.get("/", async (c) => {
 productsRouter.post("/", async (c) => {
   const membership = await requireOwner(c);
   if (!membership) return c.json({ error: "Owner access required" }, 403);
+
+  // Check subscription limit
+  const limitCheck = await checkProductLimit(membership.organizationId, c);
+  if (!limitCheck.allowed) {
+    return c.json({ 
+      error: limitCheck.error, 
+      message: limitCheck.message,
+      upgradeUrl: limitCheck.upgradeUrl,
+      current: limitCheck.current,
+      limit: limitCheck.limit,
+    }, 403);
+  }
 
   const body = await c.req.json();
   const parsed = createProductRequestSchema.safeParse(body);

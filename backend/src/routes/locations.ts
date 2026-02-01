@@ -1,5 +1,6 @@
 import { Hono, type Context } from "hono";
 import { db } from "../db";
+import { getOrganizationSubscription, SUBSCRIPTION_TIERS } from "../subscription";
 import { type AppType } from "../types";
 import { createLocationRequestSchema } from "@/shared/contracts";
 
@@ -16,6 +17,41 @@ const requireOwner = async (c: Context<AppType>) => {
 
   if (!membership || membership.role !== "OWNER") return null;
   return membership;
+};
+
+// Helper to check location limit
+const checkLocationLimit = async (organizationId: string, c: Context<AppType>) => {
+  const subscription = await getOrganizationSubscription(organizationId);
+  
+  if (!subscription || !subscription.isActive) {
+    return {
+      allowed: false,
+      error: "subscription_inactive",
+      message: "Tu suscripción no está activa",
+    };
+  }
+
+  const tierLimits = SUBSCRIPTION_TIERS[subscription.tier as keyof typeof SUBSCRIPTION_TIERS]?.limits;
+  const maxLocations = tierLimits?.locations ?? -1;
+
+  if (maxLocations === -1) {
+    return { allowed: true };
+  }
+
+  const currentCount = await db.location.count({ where: { organizationId } });
+  
+  if (currentCount >= maxLocations) {
+    return {
+      allowed: false,
+      error: "limit_exceeded",
+      message: `Has alcanzado el límite de ${maxLocations} ubicaciones. Actualiza tu plan para más.`,
+      upgradeUrl: "/subscription",
+      current: currentCount,
+      limit: maxLocations,
+    };
+  }
+
+  return { allowed: true, current: currentCount, limit: maxLocations };
 };
 
 // GET /api/locations - List locations
@@ -56,6 +92,18 @@ locationsRouter.get("/", async (c) => {
 locationsRouter.post("/", async (c) => {
   const membership = await requireOwner(c);
   if (!membership) return c.json({ error: "Owner access required" }, 403);
+
+  // Check subscription limit
+  const limitCheck = await checkLocationLimit(membership.organizationId, c);
+  if (!limitCheck.allowed) {
+    return c.json({ 
+      error: limitCheck.error, 
+      message: limitCheck.message,
+      upgradeUrl: limitCheck.upgradeUrl,
+      current: limitCheck.current,
+      limit: limitCheck.limit,
+    }, 403);
+  }
 
   const body = await c.req.json();
   const parsed = createLocationRequestSchema.safeParse(body);
