@@ -6,10 +6,12 @@ import {
   Pressable,
   ActivityIndicator,
   RefreshControl,
+  TextInput,
+  Keyboard,
 } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { Package, Plus, Edit3 } from "lucide-react-native";
+import { Package, Plus, Edit3, Search, X } from "lucide-react-native";
 import { api } from "@/lib/api";
 import { useSession } from "@/lib/useSession";
 import type { GetStockResponse, GetLocationsResponse, GetMeResponse } from "@/shared/contracts";
@@ -25,6 +27,8 @@ export default function InventoryScreen() {
   const router = useRouter();
   const { data: session } = useSession();
   const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
 
   const { data: meData } = useQuery({
     queryKey: ["me"],
@@ -53,6 +57,16 @@ export default function InventoryScreen() {
 
   const isOwner = meData?.membership?.role === "OWNER";
 
+  // Filter items based on search
+  const filteredItems = stockData?.items.filter((item) => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      item.product.name.toLowerCase().includes(query) ||
+      (item.product.category && item.product.category.toLowerCase().includes(query))
+    );
+  });
+
   if (!session?.user || !meData?.membership) {
     return (
       <View className="flex-1 bg-slate-50 items-center justify-center">
@@ -63,6 +77,27 @@ export default function InventoryScreen() {
 
   return (
     <View className="flex-1 bg-slate-50">
+      {/* Search Bar */}
+      <View className="bg-white px-4 py-3 border-b border-slate-200">
+        <View className="flex-row items-center bg-slate-100 rounded-xl px-4 py-2">
+          <Search size={18} color="#64748B" />
+          <TextInput
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder="Search products..."
+            placeholderTextColor="#94A3B8"
+            className="flex-1 ml-3 text-slate-900"
+            returnKeyType="search"
+            onSubmitEditing={() => Keyboard.dismiss()}
+          />
+          {searchQuery.length > 0 && (
+            <Pressable onPress={() => setSearchQuery("")}>
+              <X size={18} color="#94A3B8" />
+            </Pressable>
+          )}
+        </View>
+      </View>
+
       {/* Location Selector */}
       {locationsData && locationsData.locations.length > 1 && (
         <ScrollView
@@ -74,7 +109,10 @@ export default function InventoryScreen() {
           {locationsData.locations.map((location) => (
             <Pressable
               key={location.id}
-              onPress={() => setSelectedLocationId(location.id)}
+              onPress={() => {
+                setSelectedLocationId(location.id);
+                setSearchQuery("");
+              }}
               className={`px-4 py-2 rounded-full mr-2 ${
                 locationId === location.id
                   ? "bg-teal-600"
@@ -140,16 +178,18 @@ export default function InventoryScreen() {
           <View className="py-12 items-center">
             <ActivityIndicator size="large" color="#0D9488" />
           </View>
-        ) : stockData?.items.length === 0 ? (
+        ) : filteredItems?.length === 0 ? (
           <View className="py-12 items-center px-6">
             <Package size={48} color="#94A3B8" />
             <Text className="text-lg font-semibold text-slate-700 mt-4">
-              No Products Yet
+              {searchQuery ? "No Results Found" : "No Products Yet"}
             </Text>
             <Text className="text-slate-500 text-center mt-2">
-              Add products to start tracking inventory.
+              {searchQuery
+                ? "Try a different search term."
+                : "Add products to start tracking inventory."}
             </Text>
-            {isOwner && (
+            {isOwner && !searchQuery && (
               <Pressable
                 onPress={() => router.push("/add-product")}
                 className="bg-teal-600 rounded-xl px-6 py-3 mt-4 flex-row items-center active:bg-teal-700"
@@ -161,7 +201,7 @@ export default function InventoryScreen() {
           </View>
         ) : (
           <View className="px-4 py-4">
-            {stockData?.items.map((item) => {
+            {filteredItems?.map((item) => {
               const status = statusColors[item.status] ?? statusColors.OK;
               return (
                 <Pressable
@@ -258,6 +298,17 @@ export default function InventoryScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* Quick Add FAB */}
+      {isOwner && (
+        <Pressable
+          onPress={() => router.push("/add-product")}
+          className="absolute bottom-6 right-6 w-14 h-14 rounded-full bg-teal-600 items-center justify-center shadow-lg active:bg-teal-700"
+          style={{ elevation: 8 }}
+        >
+          <Plus size={28} color="white" />
+        </Pressable>
+      )}
     </View>
   );
 }

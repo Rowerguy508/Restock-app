@@ -318,6 +318,67 @@ model AuditLog {
 }
 
 // ============================================
+// EXPIRY & WASTE TRACKING (V2)
+// ============================================
+
+// Track product expiry dates for food waste management
+model ExpiryEntry {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  locationId  String
+  location    Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  quantity    Float    // Quantity expiring
+  expiryDate  DateTime // Expiration date
+  status      String   @default("PENDING") // PENDING, WASTED, USED, DONATED
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([expiryDate])
+  @@index([status])
+  @@map("expiry_entry")
+}
+
+// Track wasted/spoiled products for cost analysis
+model WasteEntry {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  locationId  String
+  location    Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  quantity    Float    // Quantity wasted
+  unitCost    Float?   // Cost per unit at time of waste
+  totalCost   Float?   // Total cost lost (quantity * unitCost)
+  reason      String   // SPOILED, EXPIRED, DAMAGED, OVER-PRODUCED, OTHER
+  notes       String?  // Additional details
+  userId      String?  // Who logged the waste
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([reason])
+  @@map("waste_entry")
+}
+
+// Daily inventory snapshot for historical tracking
+model InventorySnapshot {
+  id          String   @id @default(cuid())
+  locationId  String
+  location    Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  snapshotDate DateTime @default(now())
+  totalItems  Int      // Total unique products
+  totalValue  Float    // Estimated total inventory value
+  lowStockCount Int    // Number of items low stock
+  criticalCount Int    // Number of items critical
+  outOfStockCount Int  // Number of items out of stock
+  snapshotData String? // JSON with detailed breakdown
+
+  @@unique([locationId, snapshotDate])
+  @@index([snapshotDate])
+  @@map("inventory_snapshot")
+}
+
+// ============================================
 // V2 PLACEHOLDERS (DO NOT IMPLEMENT YET)
 // ============================================
 
