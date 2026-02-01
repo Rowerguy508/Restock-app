@@ -28,6 +28,7 @@
     "@vibecodeapp/cloud-studio": "^0.1.6",
     "better-auth": "^1.4.7",
     "hono": "4.6.0",
+    "stripe": "^17.4.0",
     "zod": "4.1.11"
   }
 }

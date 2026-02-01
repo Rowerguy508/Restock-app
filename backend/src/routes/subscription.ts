@@ -332,4 +332,88 @@ app.post("/initialize-trial", requireAuth, async (c) => {
   }
 });
 
+// ============================================
+// POST /api/subscription/checkout
+// Create Stripe checkout session
+// ============================================
+app.post("/checkout", requireAuth, async (c) => {
+  const organizationId = await getOrgFromUser(c);
+  if (!organizationId) {
+    return c.json({ error: "No organization found" }, 403);
+  }
+
+  const body = await c.req.json();
+  const { tier } = body;
+
+  if (!tier || (tier !== "PRO" && tier !== "BUSINESS")) {
+    return c.json({ error: "tier must be PRO or BUSINESS" }, 400);
+  }
+
+  try {
+    const { createCheckoutSession, STRIPE_ENABLED } = await import("../stripe");
+    
+    if (!STRIPE_ENABLED) {
+      // Fallback: upgrade directly without Stripe (for testing)
+      const result = await upgradeSubscription(organizationId, tier);
+      return c.json({ 
+        success: true,
+        mode: "direct",
+        message: "Upgraded directly (Stripe not configured)",
+        subscription: result,
+      });
+    }
+
+    const baseUrl = c.req.url.split("/api")[0];
+    const result = await createCheckoutSession(
+      organizationId,
+      tier,
+      `${baseUrl}/subscription/success`,
+      `${baseUrl}/subscription/cancel`
+    );
+
+    return c.json({
+      success: true,
+      mode: "stripe",
+      ...result,
+    });
+  } catch (error) {
+    console.error("Checkout error:", error);
+    return c.json({ error: "Failed to create checkout session" }, 500);
+  }
+});
+
+// ============================================
+// POST /api/subscription/portal
+// Create Stripe billing portal session
+// ============================================
+app.post("/portal", requireAuth, async (c) => {
+  const organizationId = await getOrgFromUser(c);
+  if (!organizationId) {
+    return c.json({ error: "No organization found" }, 403);
+  }
+
+  const baseUrl = c.req.url.split("/api")[0];
+
+  try {
+    const { createPortalSession, STRIPE_ENABLED } = await import("../stripe");
+    
+    if (!STRIPE_ENABLED) {
+      return c.json({ error: "Stripe not configured" }, 400);
+    }
+
+    const result = await createPortalSession(
+      organizationId,
+      `${baseUrl}/settings`
+    );
+
+    return c.json({
+      success: true,
+      ...result,
+    });
+  } catch (error) {
+    console.error("Portal error:", error);
+    return c.json({ error: "Failed to create portal session" }, 500);
+  }
+});
+
 export default app;
