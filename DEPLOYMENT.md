@@ -5,6 +5,14 @@
 - ✅ Added checkout/portal endpoints to subscription routes
 - ✅ Removed RevenueCat packages
 - ✅ Created `.env.example` with Stripe keys
+- ✅ Added AI features (forecasting, waste insights, cost optimization)
+- ✅ Added mobile hamburger menu to landing page
+- ✅ All 4 subdomains live (landing/signup/app/login)
+
+## Pending (Feb 1, 2026)
+- ⏳ Vibecode server SSH unreachable (port 2222 timeout)
+- ⏳ Backend deployment pending: `git pull && npm install stripe`
+- ⏳ Frontend needs deployment to restocka.app
 
 ## To Deploy to Vibecode
 
