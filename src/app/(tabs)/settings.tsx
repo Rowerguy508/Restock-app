@@ -19,6 +19,7 @@ import {
   ShoppingCart,
   Settings2,
   Users,
+  CreditCard,
 } from "lucide-react-native";
 import { api } from "@/lib/api";
 import { useSession } from "@/lib/useSession";
@@ -272,6 +273,17 @@ export default function SettingsScreen() {
               icon={Settings2}
               label="Reorder Rules"
               onPress={() => router.push("/reorder-rules")}
+            />
+          </SettingsSection>
+        )}
+
+        {/* Subscription Section (Owner Only) */}
+        {isOwner && (
+          <SettingsSection title="Subscription">
+            <SettingsRow
+              icon={CreditCard}
+              label="Manage Subscription"
+              onPress={() => router.push("/subscription")}
             />
           </SettingsSection>
         )}
