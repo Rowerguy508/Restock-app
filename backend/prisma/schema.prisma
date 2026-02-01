@@ -88,6 +88,29 @@ model Organization {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // ============================================
+  // SUBSCRIPTION FIELDS (Monetization)
+  // ============================================
+  
+  // Trial information
+  subscriptionStatus   String   @default("TRIAL")  // TRIAL, ACTIVE, EXPIRED, CANCELLED
+  subscriptionTier     String   @default("PRO")    // FREE, PRO, BUSINESS
+  trialStartDate       DateTime @default(now())
+  trialEndDate         DateTime
+  
+  // Active subscription information
+  subscriptionStartDate DateTime?
+  subscriptionEndDate   DateTime?
+  
+  // Payment provider IDs (for Stripe integration)
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  
+  // Usage tracking for limits
+  ordersThisMonth      Int      @default(0)
+  locationsCount       Int      @default(1)
+  productsCount        Int      @default(0)
+
   // Relations
   locations   Location[]
   memberships Membership[]
