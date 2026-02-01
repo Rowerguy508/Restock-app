@@ -1,6 +1,6 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import { Home, Package, ShoppingCart, Bell, Settings } from "lucide-react-native";
+import { Home, Package, ShoppingCart, Bell, Settings, Brain } from "lucide-react-native";
 
 export default function TabLayout() {
   return (
@@ -36,6 +36,14 @@ export default function TabLayout() {
           title: "Dashboard",
           tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
           headerTitle: "ReStocka",
+        }}
+      />
+      <Tabs.Screen
+        name="ai-insights"
+        options={{
+          title: "AI Insights",
+          tabBarIcon: ({ color, size }) => <Brain size={size} color={color} />,
+          headerTitle: "AI Insights",
         }}
       />
       <Tabs.Screen
