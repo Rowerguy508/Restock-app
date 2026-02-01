@@ -124,11 +124,17 @@ const PLANS: Record<string, SubscriptionPlan> = {
       products: -1,
       ordersPerMonth: -1,
       users: -1,
-      locationsText: i18n.t("subscription.features.unlimited"),
-      productsText: i18n.t("subscription.features.unlimited"),
-      ordersText: i18n.t("subscription.features.unlimited"),
+      locationsText: "Ilimitado",  // Spanish
+      productsText: "Ilimitado",   // Spanish
+      ordersText: "Ilimitado",     // Spanish
     },
   },
+};
+
+// Store unlimited text in both languages for runtime access
+const UNLIMITED_TEXTS = {
+  en: "Unlimited",
+  es: "Ilimitado",
 };
 
 // ============================================
