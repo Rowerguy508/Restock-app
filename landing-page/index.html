@@ -3,788 +3,442 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restocka - Restaurant Inventory Management</title>
+    <title id="page-title">Restocka - Restaurant Inventory Management</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.6; color: #0f172a; background: #fff; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        
-        /* Navigation */
-        nav { padding: 16px 0; position: fixed; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); z-index: 100; border-bottom: 1px solid #e2e8f0; }
-        nav .container { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 24px; font-weight: 700; color: #0f766e; }
-        .logo span { color: #0f172a; }
-        nav a { text-decoration: none; color: #475569; margin-left: 32px; font-weight: 500; font-size: 14px; transition: color 0.2s; }
-        nav a:hover { color: #0f766e; }
-        .nav-cta { background: #0d9488; color: white !important; padding: 10px 20px; border-radius: 12px; margin-left: 24px; font-weight: 600; }
-        .nav-cta:hover { background: #0f766e; }
-        .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; padding: 8px; background: none; border: none; cursor: pointer; }
-        .mobile-menu-btn span { width: 24px; height: 2px; background: #0f172a; border-radius: 2px; transition: 0.3s; }
-        
-        /* Language Selector */
-        .lang-selector { position: relative; margin-left: 24px; }
-        .lang-btn { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-size: 14px; font-weight: 500; color: #475569; transition: all 0.2s; }
-        .lang-btn:hover { border-color: #0d9488; color: #0d9488; }
-        .lang-dropdown { position: absolute; top: 100%; right: 0; margin-top: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); min-width: 150px; display: none; z-index: 200; overflow: hidden; }
-        .lang-dropdown.active { display: block; }
-        .lang-option { display: block; width: 100%; padding: 12px 16px; text-align: left; border: none; background: none; cursor: pointer; font-size: 14px; color: #475569; transition: all 0.2s; }
-        .lang-option:hover { background: #f0fdfa; color: #0d9488; }
-        .lang-option.active { background: #f0fdfa; color: #0d9488; font-weight: 600; }
-        .lang-flag { font-size: 16px; margin-right: 8px; }
-        
-        /* Hero */
-        .hero { padding: 140px 0 80px; text-align: center; background: linear-gradient(180deg, #f0fdfa 0%, #fff 100%); }
-        .hero h1 { font-size: 56px; font-weight: 700; line-height: 1.1; margin-bottom: 20px; color: #0f172a; }
-        .hero h1 span { color: #0d9488; }
-        .hero p { font-size: 18px; color: #475569; max-width: 600px; margin: 0 auto 32px; }
-        .hero-buttons { display: flex; gap: 16px; justify-content: center; }
-        .btn { display: inline-flex; align-items: center; padding: 14px 28px; border-radius: 12px; font-weight: 600; font-size: 15px; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; }
-        .btn-primary { background: #0d9488; color: white; }
-        .btn-primary:hover { background: #0f766e; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(13,148,136,0.25); }
-        .btn-secondary { background: white; color: #0f172a; border: 1px solid #e2e8f0; }
-        .btn-secondary:hover { border-color: #0d9488; color: #0d9488; background: #f0fdfa; }
-        .hero-visual { margin-top: 48px; background: white; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.08); padding: 20px; border: 1px solid #e2e8f0; }
-        .phone-mockup { max-width: 280px; margin: 0 auto; background: #0f172a; border-radius: 28px; padding: 10px; }
-        .phone-screen { background: #f8fafc; border-radius: 22px; aspect-ratio: 9/19; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        
-        /* Problem */
-        .problem { padding: 80px 0; background: #fef2f2; }
-        .problem h2 { font-size: 36px; text-align: center; margin-bottom: 16px; color: #0f172a; font-weight: 700; }
-        .problem > .container > p { text-align: center; color: #475569; font-size: 16px; margin-bottom: 48px; }
-        .pain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        .pain-card { background: white; padding: 28px; border-radius: 16px; text-align: center; border: 1px solid #e2e8f0; transition: all 0.2s; }
-        .pain-card:hover { border-color: #fecaca; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .pain-icon { width: 56px; height: 56px; background: #fef2f2; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 24px; }
-        .pain-card h3 { font-size: 18px; margin-bottom: 10px; color: #0f172a; font-weight: 600; }
-        .pain-card p { color: #64748b; font-size: 14px; line-height: 1.6; }
-        
-        /* Solution */
-        .solution { padding: 80px 0; }
-        .solution h2 { font-size: 36px; text-align: center; margin-bottom: 16px; color: #0f172a; font-weight: 700; }
-        .solution > .container > p { text-align: center; color: #475569; font-size: 16px; margin-bottom: 48px; }
-        .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-        .feature-card { display: flex; gap: 16px; padding: 24px; border-radius: 16px; border: 1px solid #e2e8f0; background: white; transition: all 0.2s; }
-        .feature-card:hover { border-color: #0d9488; box-shadow: 0 8px 25px rgba(0,0,0,0.05); }
-        .feature-icon { width: 48px; height: 48px; background: #f0fdfa; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-        .feature-content h3 { font-size: 17px; margin-bottom: 6px; color: #0f172a; font-weight: 600; }
-        .feature-content p { color: #64748b; font-size: 14px; line-height: 1.5; }
-        
-        /* Social Proof */
-        .social-proof { padding: 80px 0; background: #f8fafc; }
-        .social-proof h2 { font-size: 36px; text-align: center; margin-bottom: 16px; color: #0f172a; font-weight: 700; }
-        .social-proof > .container > p { text-align: center; color: #475569; font-size: 16px; margin-bottom: 48px; }
-        .metrics { display: flex; justify-content: center; gap: 64px; }
-        .metric { text-align: center; }
-        .metric-number { font-size: 42px; font-weight: 700; color: #0d9488; }
-        .metric-label { color: #64748b; font-size: 14px; font-weight: 500; margin-top: 4px; }
-        .testimonials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; }
-        .testimonial { background: white; padding: 28px; border-radius: 16px; border: 1px solid #e2e8f0; }
-        .testimonial p { font-size: 14px; color: #475569; margin-bottom: 20px; font-style: italic; line-height: 1.6; }
-        .testimonial-author { display: flex; align-items: center; gap: 12px; }
-        .author-avatar { width: 44px; height: 44px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .author-info h4 { font-size: 14px; font-weight: 600; color: #0f172a; }
-        .author-info span { font-size: 13px; color: #64748b; }
-        
-        /* Pricing */
-        .pricing { padding: 80px 0; background: linear-gradient(180deg, #fff 0%, #f0fdfa 100%); }
-        .pricing h2 { font-size: 36px; text-align: center; margin-bottom: 16px; color: #0f172a; font-weight: 700; }
-        .pricing > .container > p { text-align: center; color: #475569; font-size: 16px; margin-bottom: 48px; }
-        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1000px; margin: 0 auto; }
-        .pricing-card { background: white; padding: 32px 28px; border-radius: 16px; text-align: center; border: 1px solid #e2e8f0; transition: all 0.2s; }
-        .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
-        .pricing-card.popular { border: 2px solid #0d9488; position: relative; }
-        .popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #0d9488; color: white; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .pricing-card h3 { font-size: 20px; margin-bottom: 8px; color: #0f172a; font-weight: 600; }
-        .pricing-card .price { font-size: 44px; font-weight: 700; color: #0f172a; margin: 20px 0; }
-        .pricing-card .price span { font-size: 16px; font-weight: 400; color: #64748b; }
-        .pricing-card .price.free { font-size: 28px; }
-        .pricing-features { list-style: none; margin-bottom: 28px; text-align: left; }
-        .pricing-features li { padding: 10px 0; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #475569; }
-        .pricing-features li::before { content: "✓"; color: #0d9488; font-weight: 700; font-size: 14px; }
-        .pricing-card .btn { width: 100%; justify-content: center; }
-        
-        /* CTA */
-        .cta { padding: 80px 0; text-align: center; background: #0d9488; color: white; }
-        .cta h2 { font-size: 36px; margin-bottom: 14px; font-weight: 700; }
-        .cta p { font-size: 17px; opacity: 0.95; margin-bottom: 32px; }
-        .cta .btn { background: white; color: #0d9488; font-weight: 600; }
-        .cta .btn:hover { background: #f0fdfa; transform: translateY(-2px); }
-        
-        /* Footer */
-        footer { padding: 48px 0; background: #0f172a; color: #94a3b8; text-align: center; }
-        footer a { color: #94a3b8; text-decoration: none; margin: 0 16px; font-size: 14px; transition: color 0.2s; }
-        footer a:hover { color: white; }
-        footer p { margin-top: 24px; font-size: 13px; }
-        
-        @media (max-width: 768px) {
-            /* Typography */
-            .hero h1 { font-size: 32px; line-height: 1.2; }
-            .hero p { font-size: 15px; margin-bottom: 24px; }
-            h2 { font-size: 28px !important; }
-            p { font-size: 14px; }
-            
-            /* Navigation - Mobile */
-            nav { padding: 12px 0; }
-            nav .container { flex-direction: row; gap: 0; }
-            nav .logo { font-size: 20px; }
-            nav .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; flex-direction: column; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 1px solid #e2e8f0; }
-            nav .nav-links.active { display: flex; }
-            nav .nav-links a { margin: 6px 0; padding: 12px; background: #f8fafc; border-radius: 10px; font-size: 14px; }
-            nav .nav-cta { margin: 10px 0 0; display: block; text-align: center; }
-            .mobile-menu-btn { display: flex; }
-            .lang-selector { margin: 10px 0 0; width: 100%; }
-            .lang-btn { width: 100%; justify-content: center; }
-            .lang-dropdown { position: static; margin-top: 8px; box-shadow: none; border: none; background: #f8fafc; border-radius: 10px; }
-            .lang-dropdown.active { display: block; }
-            
-            /* Hero - Mobile */
-            .hero { padding: 120px 0 50px; }
-            .hero-buttons { flex-direction: column; gap: 10px; }
-            .hero-buttons .btn { width: 100%; justify-content: center; padding: 14px 24px; }
-            .hero-visual { margin-top: 36px; padding: 12px; }
-            .phone-mockup { max-width: 180px; padding: 8px; }
-            
-            /* Grids - Mobile */
-            .pain-grid, .features-grid, .pricing-grid, .testimonials { grid-template-columns: 1fr; gap: 16px; }
-            
-            /* Sections - Mobile */
-            .problem, .solution, .social-proof, .pricing, .cta { padding: 56px 0; }
-            .problem > .container > p, .solution > .container > p, .social-proof > .container > p, .pricing > .container > p { margin-bottom: 36px; }
-            
-            /* Pain Cards - Mobile */
-            .pain-card { padding: 20px 16px; }
-            .pain-icon { width: 48px; height: 48px; font-size: 22px; }
-            
-            /* Features - Mobile */
-            .feature-card { flex-direction: column; text-align: center; padding: 20px 16px; gap: 12px; }
-            .feature-icon { margin: 0 auto; }
-            
-            /* Metrics - Mobile */
-            .metrics { flex-direction: row; gap: 20px; flex-wrap: wrap; justify-content: center; }
-            .metric { min-width: 90px; }
-            .metric-number { font-size: 28px; }
-            
-            /* Testimonials - Mobile */
-            .testimonial { padding: 20px 16px; }
-            .testimonial-author { flex-direction: column; text-align: center; }
-            
-            /* Pricing - Mobile */
-            .pricing-card { padding: 28px 20px; }
-            .pricing-card .price { font-size: 32px; }
-            .pricing-card .price.free { font-size: 24px; }
-            .pricing-features { font-size: 13px; }
-            .pricing-features li { padding: 8px 0; }
-            
-            /* CTA - Mobile */
-            .cta h2 { font-size: 28px; }
-            .cta p { font-size: 15px; }
-            .cta .btn { width: 100%; justify-content: center; }
-            
-            /* Footer - Mobile */
-            footer { padding: 36px 20px; }
-            footer .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
-            footer a { margin: 6px; font-size: 13px; }
-        }
-        
-        @media (max-width: 480px) {
-            .container { padding: 0 16px; }
-            .hero h1 { font-size: 26px; }
-            .hero { padding: 100px 0 40px; }
-            .phone-mockup { max-width: 150px; }
-            .metric-number { font-size: 24px; }
-        }
-    </style>
+    <style id="dynamic-styles"></style>
 </head>
-<body>
-    <nav>
-        <div class="container">
-            <div class="logo">Restock<span>a</span></div>
-            <button class="mobile-menu-btn" onclick="toggleMenu()" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <div class="nav-links" id="navLinks">
-                <a href="#features" data-i18n="nav_features">Features</a>
-                <a href="#pricing" data-i18n="nav_pricing">Pricing</a>
-                <a href="#contact" data-i18n="nav_contact">Contact</a>
-                <a href="#" class="nav-cta" data-i18n="nav_download">Download App</a>
-            </div>
-            <div class="lang-selector">
-                <button class="lang-btn" onclick="toggleLang()" id="currentLang">
-                    <span class="lang-flag">🇺🇸</span>
-                    <span>EN</span>
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-                <div class="lang-dropdown" id="langDropdown">
-                    <button class="lang-option active" onclick="setLang('en')">
-                        <span class="lang-flag">🇺🇸</span> English
-                    </button>
-                    <button class="lang-option" onclick="setLang('es')">
-                        <span class="lang-flag">🇪🇸</span> Español
-                    </button>
-                    <button class="lang-option" onclick="setLang('pt')">
-                        <span class="lang-flag">🇧🇷</span> Português
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-    
-    <section class="hero">
-        <div class="container">
-            <h1>Never Run Out of<br><span>Ingredients Again</span></h1>
-            <p>The smart inventory management app for restaurants. Track stock, auto-reorder, and save hours every week.</p>
-            <div class="hero-buttons">
-                <a href="#" class="btn btn-primary">Start Free Trial</a>
-                <a href="#" class="btn btn-secondary">Watch Demo</a>
-            </div>
-            <div class="hero-visual">
-                <div class="phone-mockup">
-                    <div class="phone-screen">
-                        <div style="text-align: center; padding: 20px;">
-                            <div style="font-size: 14px; color: #6b7280; margin-bottom: 8px;">Total Value</div>
-                            <div style="font-size: 32px; font-weight: 700; color: #0d9488;">$24,580</div>
-                            <div style="margin-top: 24px; background: white; padding: 16px; border-radius: 12px; text-align: left;">
-                                <div style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">Low Stock Items</div>
-                                <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
-                                    <span style="font-size: 14px;">Tomatoes</span>
-                                    <span style="font-size: 14px; color: #ef4444;">5 lbs</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
-                                    <span style="font-size: 14px;">Olive Oil</span>
-                                    <span style="font-size: 14px; color: #ef4444;">2 bottles</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; padding: 8px 0;">
-                                    <span style="font-size: 14px;">Chicken</span>
-                                    <span style="font-size: 14px; color: #f59e0b;">12 lbs</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <section class="problem">
-        <div class="container">
-            <h2>Restaurant Inventory is Broken</h2>
-            <p>You're busy running your restaurant. Inventory shouldn't be another headache.</p>
-            <div class="pain-grid">
-                <div class="pain-card">
-                    <div class="pain-icon">😰</div>
-                    <h3>Unexpected Shortages</h3>
-                    <p>You find out you're out of a key ingredient mid-service. Dinner ruined. Customer angry.</p>
-                </div>
-                <div class="pain-card">
-                    <div class="pain-icon">📝</div>
-                    <h3>Manual Spreadsheets</h3>
-                    <p>Hours every week counting boxes, writing lists, and trying to make sense of the chaos.</p>
-                </div>
-                <div class="pain-card">
-                    <div class="pain-icon">💸</div>
-                    <h3>Wasted Food</h3>
-                    <p>You over-order, products expire, and money flies down the drain. Every. Single. Week.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <section class="solution" id="features">
-        <div class="container">
-            <h2>Your Kitchen, Under Control</h2>
-            <p>Smart features that save you time, money, and stress.</p>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <div class="feature-content">
-                        <h3>Mobile First</h3>
-                        <p>Count inventory right from your phone. At the warehouse, in the walk-in, anywhere.</p>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔄</div>
-                    <div class="feature-content">
-                        <h3>Auto-Reorder Rules</h3>
-                        <p>Set it and forget it. Restocka automatically suggests orders when items run low.</p>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">👥</div>
-                    <div class="feature-content">
-                        <h3>Team Management</h3>
-                        <p>Multiple locations, multiple users. Track who's doing what across your operation.</p>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <div class="feature-content">
-                        <h3>Smart Analytics</h3>
-                        <p>Know your food costs, track waste, and optimize orders with data-driven insights.</p>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔔</div>
-                    <div class="feature-content">
-                        <h3>Low Stock Alerts</h3>
-                        <p>Never be surprised. Get notified before you run out of anything critical.</p>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🛒</div>
-                    <div class="feature-content">
-                        <h3>Easy Supplier Orders</h3>
-                        <p>Create and send orders to suppliers directly from the app. One tap, done.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <section class="social-proof">
-        <div class="container">
-            <h2>Trusted by Restaurants</h2>
-            <p>Join hundreds of restaurants saving time and money every day.</p>
-            <div class="metrics">
-                <div class="metric">
-                    <div class="metric-number">500+</div>
-                    <div class="metric-label">Restaurants</div>
-                </div>
-                <div class="metric">
-                    <div class="metric-number">$2M+</div>
-                    <div class="metric-label">Food Costs Saved</div>
-                </div>
-                <div class="metric">
-                    <div class="metric-number">10K+</div>
-                    <div class="metric-label">Hours Saved Monthly</div>
-                </div>
-            </div>
-            <div class="testimonials">
-                <div class="testimonial">
-                    <p>"I used to spend 4 hours every Sunday counting inventory. Now it takes me 20 minutes on my phone while I drink my coffee."</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar" style="background: #fef3c7;">👨‍🍳</div>
-                        <div class="author-info">
-                            <h4>Carlos Martinez</h4>
-                            <span>Owner, Bella Roma Italian Kitchen</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial">
-                    <p>"The auto-reorder feature alone pays for the app ten times over. No more rushed mid-service orders."</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar" style="background: #dbeafe;">👩‍🍳</div>
-                        <div class="author-info">
-                            <h4>Sarah Chen</h4>
-                            <span>GM, Green Fork Farm Kitchen</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial">
-                    <p>"We manage 3 locations from one dashboard. The team feature is a game-changer for our operation."</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar" style="background: #fce7f3;">👨‍💼</div>
-                        <div class="author-info">
-                            <h4>Mike Rodriguez</h4>
-                            <span>Owner, Taco Loco Express (3 locations)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <section class="pricing" id="pricing">
-        <div class="container">
-            <h2>Simple, Transparent Pricing</h2>
-            <p>Start free, upgrade when you're ready. No hidden fees.</p>
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <h3>Free</h3>
-                    <div class="price free">$0<span>/forever</span></div>
-                    <ul class="pricing-features">
-                        <li>1 location</li>
-                        <li>5 products</li>
-                        <li>10 orders/month</li>
-                        <li>1 team member</li>
-                        <li>Email support</li>
-                    </ul>
-                    <a href="#" class="btn btn-secondary">Get Started</a>
-                </div>
-                <div class="pricing-card popular">
-                    <div class="popular-badge">Most Popular</div>
-                    <h3>Pro</h3>
-                    <div class="price">$29<span>/month</span></div>
-                    <ul class="pricing-features">
-                        <li>3 locations</li>
-                        <li>50 products</li>
-                        <li>100 orders/month</li>
-                        <li>3 team members</li>
-                        <li>Auto-reorder assist</li>
-                        <li>Basic analytics</li>
-                        <li>Priority support</li>
-                    </ul>
-                    <a href="#" class="btn btn-primary">Start Free Trial</a>
-                </div>
-                <div class="pricing-card">
-                    <h3>Business</h3>
-                    <div class="price">$79<span>/month</span></div>
-                    <ul class="pricing-features">
-                        <li>Unlimited locations</li>
-                        <li>Unlimited products</li>
-                        <li>Unlimited orders</li>
-                        <li>Unlimited team members</li>
-                        <li>Full auto-reorder</li>
-                        <li>Advanced analytics</li>
-                        <li>API access</li>
-                        <li>24/7 support</li>
-                    </ul>
-                    <a href="#" class="btn btn-secondary">Contact Sales</a>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <section class="cta">
-        <div class="container">
-            <h2>Ready to Take Control?</h2>
-            <p>Start your 7-day free trial today. No credit card required.</p>
-            <a href="#" class="btn">Download Free</a>
-        </div>
-    </section>
-    
-    <footer id="contact">
-        <div class="container">
-            <div class="logo" style="color: white; margin-bottom: 24px;">Restock<span>a</span></div>
-            <div class="footer-links">
-                <a href="#">About</a>
-                <a href="#">Features</a>
-                <a href="#">Pricing</a>
-                <a href="#">Contact</a>
-                <a href="#">Privacy</a>
-                <a href="#">Terms</a>
-            </div>
-            <p>© 2026 Restocka. All rights reserved.</p>
-        </div>
-    </footer>
+<body id="page-body">
+    <div id="app"></div>
     
     <script>
-    // Translations data
-    const translations = {
-        en: {
-            nav_features: "Features",
-            nav_pricing: "Pricing",
-            nav_contact: "Contact",
-            nav_download: "Download App",
-            
-            hero_title: "Never Run Out of",
-            hero_title_span: "Ingredients Again",
-            hero_subtitle: "The smart inventory management app for restaurants. Track stock, auto-reorder, and save hours every week.",
-            hero_cta_primary: "Start Free Trial",
-            hero_cta_secondary: "Watch Demo",
-            hero_total_value: "Total Value",
-            hero_low_stock: "Low Stock Items",
-            
-            problem_title: "Restaurant Inventory is Broken",
-            problem_subtitle: "You're busy running your restaurant. Inventory shouldn't be another headache.",
-            pain_1_title: "Unexpected Shortages",
-            pain_1_text: "You find out you're out of a key ingredient mid-service. Dinner ruined. Customer angry.",
-            pain_2_title: "Manual Spreadsheets",
-            pain_2_text: "Hours every week counting boxes, writing lists, and trying to make sense of the chaos.",
-            pain_3_title: "Wasted Food",
-            pain_3_text: "You over-order, products expire, and money flies down the drain. Every. Single. Week.",
-            
-            solution_title: "Your Kitchen, Under Control",
-            solution_subtitle: "Smart features that save you time, money, and stress.",
-            feat_1_title: "Mobile First",
-            feat_1_text: "Count inventory right from your phone. At the warehouse, in the walk-in, anywhere.",
-            feat_2_title: "Auto-Reorder Rules",
-            feat_2_text: "Set it and forget it. Restocka automatically suggests orders when items run low.",
-            feat_3_title: "Team Management",
-            feat_3_text: "Multiple locations, multiple users. Track who's doing what across your operation.",
-            feat_4_title: "Smart Analytics",
-            feat_4_text: "Know your food costs, track waste, and optimize orders with data-driven insights.",
-            feat_5_title: "Low Stock Alerts",
-            feat_5_text: "Never be surprised. Get notified before you run out of anything critical.",
-            feat_6_title: "Easy Supplier Orders",
-            feat_6_text: "Create and send orders to suppliers directly from the app. One tap, done.",
-            
-            social_title: "Trusted by Restaurants",
-            social_subtitle: "Join hundreds of restaurants saving time and money every day.",
-            metric_1: "500+",
-            metric_1_label: "Restaurants",
-            metric_2: "$2M+",
-            metric_2_label: "Food Costs Saved",
-            metric_3: "10K+",
-            metric_3_label: "Hours Saved Monthly",
-            
-            pricing_title: "Simple, Transparent Pricing",
-            pricing_subtitle: "Start free, upgrade when you're ready. No hidden fees.",
-            
-            cta_title: "Ready to Take Control?",
-            cta_subtitle: "Start your 7-day free trial today. No credit card required.",
-            cta_btn: "Download Free",
-            
-            footer_about: "About",
-            footer_features: "Features",
-            footer_pricing: "Pricing",
-            footer_contact: "Contact",
-            footer_privacy: "Privacy",
-            footer_terms: "Terms",
-            footer_copyright: "© 2026 Restocka. All rights reserved."
-        },
-        es: {
-            nav_features: "Características",
-            nav_pricing: "Precios",
-            nav_contact: "Contacto",
-            nav_download: "Descargar App",
-            
-            hero_title: "Nunca te Quedes sin",
-            hero_title_span: "Ingredientes",
-            hero_subtitle: "La app inteligente de gestión de inventario para restaurantes. Controla stock, reordena automáticamente y ahorra horas cada semana.",
-            hero_cta_primary: "Prueba Gratis",
-            hero_cta_secondary: "Ver Demo",
-            hero_total_value: "Valor Total",
-            hero_low_stock: "Items con Stock Bajo",
-            
-            problem_title: "El Inventario de Restaurantes está Roto",
-            problem_subtitle: "Estás ocupado administrando tu restaurante. El inventario no debería ser otro dolor de cabeza.",
-            pain_1_title: "Faltantes Inesperados",
-            pain_1_text: "Te enteras que te falta un ingrediente clave a mitad del servicio. Cena arruinada. Cliente enojado.",
-            pain_2_title: "Hojas de Cálculo Manuales",
-            pain_2_text: "Horas cada semana contando cajas, haciendo listas y tratando de entender el caos.",
-            pain_3_title: "Comida Desperdiciada",
-            pain_3_text: "Sobre-ordenas, los productos vencen y el dinero se va por el desagüe. Cada. Semana.",
-            
-            solution_title: "Tu Cocina Bajo Control",
-            solution_subtitle: "Características inteligentes que te ahorran tiempo, dinero y estrés.",
-            feat_1_title: "Primero en Móvil",
-            feat_1_text: "Cuenta inventario desde tu teléfono. En la bodega, en la cámara, en cualquier lugar.",
-            feat_2_title: "Reglas de Auto-Reorden",
-            feat_2_text: "Configúralo y olvídalo. Restocka sugiere automáticamente órdenes cuando los items están bajos.",
-            feat_3_title: "Gestión de Equipo",
-            feat_3_text: "Múltiples ubicaciones, múltiples usuarios. Rastrea quién hace qué en toda tu operación.",
-            feat_4_title: "Analíticas Inteligentes",
-            feat_4_text: "Conoce tus costos de comida, rastrea desperdicios y optimiza órdenes con datos.",
-            feat_5_title: "Alertas de Stock Bajo",
-            feat_5_text: "Nunca te sorprendas. Recibe notificaciones antes de quedarte sin algo crítico.",
-            feat_6_title: "Órdenes a Proveedores",
-            feat_6_text: "Crea y envía órdenes a proveedores directamente desde la app. Un toque, listo.",
-            
-            social_title: "Confiado por Restaurantes",
-            social_subtitle: "Únete a cientos de restaurantes que ahorran tiempo y dinero cada día.",
-            metric_1: "500+",
-            metric_1_label: "Restaurantes",
-            metric_2: "$2M+",
-            metric_2_label: "Costos Ahorrados",
-            metric_3: "10K+",
-            metric_3_label: "Horas Ahorradas",
-            
-            pricing_title: "Precios Simples y Transparentes",
-            pricing_subtitle: "Empieza gratis, mejora cuando quieras. Sin costos ocultos.",
-            
-            cta_title: "¿Listo a Tomar Control?",
-            cta_subtitle: "Empieza tu prueba gratis de 7 días hoy. Sin tarjeta de crédito.",
-            cta_btn: "Descargar Gratis",
-            
-            footer_about: "Nosotros",
-            footer_features: "Características",
-            footer_pricing: "Precios",
-            footer_contact: "Contacto",
-            footer_privacy: "Privacidad",
-            footer_terms: "Términos",
-            footer_copyright: "© 2026 Restocka. Todos los derechos reservados."
-        },
-        pt: {
-            nav_features: "Recursos",
-            nav_pricing: "Preços",
-            nav_contact: "Contato",
-            nav_download: "Baixar App",
-            
-            hero_title: "Nunca Fique sem",
-            hero_title_span: "Ingredientes",
-            hero_subtitle: "O app inteligente de gestão de estoque para restaurantes. Controle estoque, reordene automaticamente e economize horas toda semana.",
-            hero_cta_primary: "Teste Grátis",
-            hero_cta_secondary: "Ver Demo",
-            hero_total_value: "Valor Total",
-            hero_low_stock: "Itens com Estoque Baixo",
-            
-            problem_title: "O Estoque de Restaurantes está Quebrado",
-            problem_subtitle: "Você está ocupado administrando seu restaurante. Estoque não deve ser mais uma dor de cabeça.",
-            pain_1_title: "Faltas Inesperadas",
-            pain_1_text: "Você descobre que está sem um ingrediente chave durante o serviço. Jantar arruinado. Cliente irritado.",
-            pain_2_title: "Planilhas Manuais",
-            pain_2_text: "Horas toda semana contando caixas, fazendo listas e tentando dar sentido ao caos.",
-            pain_3_title: "Comida Desperdiçada",
-            pain_3_text: "Você sobre-pede, produtos expiram e dinheiro vai pelo ralo. Toda. Semana.",
-            
-            solution_title: "Sua Cozinha Sob Controle",
-            solution_subtitle: "Recursos inteligentes que economizam tempo, dinheiro e estresse.",
-            feat_1_title: "Primero no Celular",
-            feat_1_text: "Conte estoque direto do seu telefone. No depósito, na câmara, em qualquer lugar.",
-            feat_2_title: "Regras de Auto-Pedido",
-            feat_2_text: "Configure e esqueca. Restocka sugere automaticamente pedidos quando itens estão baixos.",
-            feat_3_title: "Gestão de Equipe",
-            feat_3_text: "Múltiplos locais, múltiplos usuários. Rastreie quem faz o quê em toda sua operação.",
-            feat_4_title: "Analises Inteligentes",
-            feat_4_text: "Conheça seus custos de comida, rastreie desperdício e otimize pedidos com dados.",
-            feat_5_title: "Alertas de Estoque Baixo",
-            feat_5_text: "Nunca se surpreenda. Receba notificações antes de ficar sem algo crítico.",
-            feat_6_title: "Pedidos a Fornecedores",
-            feat_6_text: "Crie e envie pedidos a fornecedores direto do app. Um toque, pronto.",
-            
-            social_title: "Confiado por Restaurantes",
-            social_subtitle: "Junte-se a centenas de restaurantes economizando tempo e dinheiro todo dia.",
-            metric_1: "500+",
-            metric_1_label: "Restaurantes",
-            metric_2: "$2M+",
-            metric_2_label: "Custos Economizados",
-            metric_3: "10K+",
-            metric_3_label: "Horas Economizadas",
-            
-            pricing_title: "Preços Simples e Transparentes",
-            pricing_subtitle: "Comece grátis, faça upgrade quando quiser. Sem taxas ocultas.",
-            
-            cta_title: "Pronto para Tomar Controle?",
-            cta_subtitle: "Comece seu teste grátis de 7 dias hoje. Sem cartão de crédito.",
-            cta_btn: "Baixar Grátis",
-            
-            footer_about: "Sobre",
-            footer_features: "Recursos",
-            footer_pricing: "Preços",
-            footer_contact: "Contato",
-            footer_privacy: "Privacidade",
-            footer_terms: "Termos",
-            footer_copyright: "© 2026 Restocka. Todos os direitos reservados."
+    // Detect hostname and show appropriate page
+    const hostname = window.location.hostname;
+    const isLanding = hostname.includes('landing') || hostname === 'restocka.app';
+    const isSignup = hostname.includes('signup');
+    const isApp = hostname.includes('app') || hostname.includes('login');
+    
+    // Landing Page Content
+    const landingStyles = `
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #fff; color: #0f172a; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        header { padding: 20px 0; position: fixed; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #e2e8f0; z-index: 100; }
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: 700; color: #0d9488; text-decoration: none; }
+        .logo span { color: #0f172a; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { text-decoration: none; color: #475569; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: #0d9488; }
+        .btn { padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; border: none; cursor: pointer; }
+        .btn-primary { background: #0d9488; color: white; }
+        .btn-primary:hover { background: #0f766e; }
+        .btn-outline { background: white; color: #0f172a; border: 1px solid #e2e8f0; }
+        .btn-outline:hover { border-color: #0d9488; color: #0d9488; }
+        .hero { padding: 140px 0 80px; text-align: center; background: linear-gradient(180deg, #f0fdfa 0%, #fff 100%); }
+        .hero h1 { font-size: 48px; font-weight: 700; line-height: 1.15; margin-bottom: 20px; color: #0f172a; }
+        .hero h1 span { color: #0d9488; }
+        .hero p { font-size: 18px; color: #64748b; max-width: 600px; margin: 0 auto 32px; line-height: 1.6; }
+        .hero-btns { display: flex; gap: 16px; justify-content: center; }
+        .stats { display: flex; justify-content: center; gap: 64px; padding: 48px 0; border-bottom: 1px solid #e2e8f0; }
+        .stat { text-align: center; }
+        .stat-num { font-size: 36px; font-weight: 700; color: #0d9488; }
+        .stat-label { font-size: 14px; color: #64748b; margin-top: 4px; }
+        .features { padding: 80px 0; }
+        .section-title { text-align: center; margin-bottom: 48px; }
+        .section-title h2 { font-size: 32px; font-weight: 700; margin-bottom: 12px; }
+        .section-title p { color: #64748b; font-size: 16px; }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+        .feature-card { background: #f8fafc; border-radius: 16px; padding: 28px; border: 1px solid #e2e8f0; }
+        .feature-icon { width: 48px; height: 48px; background: #f0fdfa; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px; }
+        .feature-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .feature-card p { font-size: 14px; color: #64748b; line-height: 1.6; }
+        .pricing { padding: 80px 0; background: #f8fafc; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 900px; margin: 0 auto; }
+        .price-card { background: white; border-radius: 16px; padding: 32px; border: 1px solid #e2e8f0; text-align: center; }
+        .price-card.popular { border: 2px solid #0d9488; position: relative; }
+        .popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #0d9488; color: white; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .price-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+        .price { font-size: 40px; font-weight: 700; color: #0f172a; margin: 16px 0; }
+        .price span { font-size: 16px; font-weight: 400; color: #64748b; }
+        .price-features { list-style: none; text-align: left; margin: 24px 0; }
+        .price-features li { padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #475569; display: flex; align-items: center; gap: 10px; }
+        .price-features li::before { content: "✓"; color: #0d9488; font-weight: 700; }
+        .cta { padding: 80px 0; text-align: center; background: #0d9488; color: white; }
+        .cta h2 { font-size: 32px; font-weight: 700; margin-bottom: 12px; }
+        .cta p { font-size: 16px; opacity: 0.9; margin-bottom: 32px; }
+        .cta .btn { background: white; color: #0d9488; font-size: 16px; padding: 16px 40px; }
+        footer { padding: 48px 0; text-align: center; border-top: 1px solid #e2e8f0; }
+        footer .logo { margin-bottom: 16px; display: inline-block; }
+        footer p { color: #94a3b8; font-size: 14px; }
+        footer .links { margin-top: 24px; }
+        footer .links a { color: #64748b; text-decoration: none; margin: 0 16px; font-size: 14px; }
+        footer .links a:hover { color: #0d9488; }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 32px; }
+            .hero p { font-size: 15px; }
+            .hero-btns { flex-direction: column; }
+            .stats { flex-wrap: wrap; gap: 32px; }
+            .features-grid, .pricing-grid { grid-template-columns: 1fr; }
         }
-    };
+    `;
     
-    const langFlags = { en: '🇺🇸', es: '🇪🇸', pt: '🇧🇷' };
-    const langNames = { en: 'EN', es: 'ES', pt: 'PT' };
-    let currentLang = 'en';
+    // Signup Page Styles
+    const signupStyles = `
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; min-height: 100vh; }
+        .container { max-width: 480px; margin: 0 auto; padding: 0 24px; }
+        header { padding: 32px 0; text-align: center; }
+        .logo { font-size: 28px; font-weight: 700; color: #0d9488; }
+        .logo span { color: #0f172a; }
+        .progress { display: flex; justify-content: center; gap: 8px; margin-bottom: 40px; }
+        .step { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; background: #e2e8f0; color: #64748b; }
+        .step.active { background: #0d9488; color: white; }
+        .step.completed { background: #0d9488; color: white; }
+        .step-line { width: 40px; height: 2px; background: #e2e8f0; align-self: center; }
+        .step-line.active { background: #0d9488; }
+        .card { background: white; border-radius: 20px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .subtitle { color: #64748b; font-size: 15px; margin-bottom: 32px; line-height: 1.5; }
+        label { display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px; }
+        .input-group { margin-bottom: 20px; }
+        input { width: 100%; padding: 14px 16px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 15px; transition: all 0.2s; background: #fff; }
+        input:focus { outline: none; border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13,148,136,0.1); }
+        .hint { font-size: 12px; color: #94a3b8; margin-top: 6px; }
+        .btn { width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background: #0d9488; color: white; }
+        .btn-primary:hover { background: #0f766e; }
+        .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+        .btn-secondary { background: #f1f5f9; color: #475569; margin-top: 12px; }
+        .btn-secondary:hover { background: #e2e8f0; }
+        .benefits { margin-top: 32px; padding-top: 24px; border-top: 1px solid #e2e8f0; }
+        .benefit { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .benefit-icon { width: 24px; height: 24px; background: #f0fdfa; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+        .benefit-text { font-size: 14px; color: #475569; }
+        footer { text-align: center; padding: 32px 0; color: #94a3b8; font-size: 13px; }
+        footer a { color: #0d9488; text-decoration: none; }
+        @media (max-width: 480px) {
+            .card { padding: 24px; border-radius: 16px; }
+            h1 { font-size: 22px; }
+        }
+    `;
     
-    // Auto-detect browser language
-    function detectLang() {
-        const browserLang = navigator.language || navigator.userLanguage;
-        if (browserLang.startsWith('es')) return 'es';
-        if (browserLang.startsWith('pt')) return 'pt';
-        if (browserLang.startsWith('en')) return 'en';
-        return 'en';
+    // Login Page Styles
+    const loginStyles = signupStyles + `
+        .login-card { max-width: 400px; margin: 40px auto; }
+        .divider { display: flex; align-items: center; gap: 16px; margin: 24px 0; }
+        .divider-line { flex: 1; height: 1px; background: #e2e8f0; }
+        .divider-text { font-size: 13px; color: #94a3b8; }
+        .demo-link { text-align: center; margin-top: 16px; font-size: 14px; color: #64748b; }
+        .demo-link a { color: #0d9488; text-decoration: none; }
+    `;
+    
+    // App Page Styles (placeholder)
+    const appStyles = `
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; min-height: 100vh; }
+        .app-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .app-header { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); padding: 60px 20px; border-radius: 24px; margin-bottom: 24px; color: white; }
+        .app-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .app-subtitle { opacity: 0.8; font-size: 14px; }
+        .login-prompt { text-align: center; padding: 80px 20px; }
+        .login-prompt h2 { font-size: 24px; margin-bottom: 12px; }
+        .login-prompt p { color: #64748b; margin-bottom: 24px; }
+        .btn { display: inline-block; padding: 14px 32px; border-radius: 12px; font-size: 15px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .btn-primary { background: #0d9488; color: white; }
+        .btn-primary:hover { background: #0f766e; }
+    `;
+    
+    // Render Landing Page
+    function renderLanding() {
+        document.getElementById('page-title').textContent = 'Restocka - Restaurant Inventory Management';
+        document.getElementById('dynamic-styles').textContent = landingStyles;
+        document.getElementById('page-body').innerHTML = \`
+            <header>
+                <div class="container">
+                    <a href="https://landing.restocka.app" class="logo">Restock<span>a</span></a>
+                    <nav class="nav-links">
+                        <a href="#features">Features</a>
+                        <a href="#pricing">Pricing</a>
+                        <a href="https://signup.restocka.app">Sign Up</a>
+                        <a href="https://app.restocka.app">Login</a>
+                    </nav>
+                </div>
+            </header>
+            <section class="hero">
+                <div class="container">
+                    <h1>Never Run Out of<br><span>Ingredients Again</span></h1>
+                    <p>The smart inventory management app for restaurants. Track stock, auto-reorder, and save hours every week.</p>
+                    <div class="hero-btns">
+                        <a href="https://signup.restocka.app" class="btn btn-primary">Start Free Trial</a>
+                        <a href="#features" class="btn btn-outline">Learn More</a>
+                    </div>
+                </div>
+            </section>
+            <section class="stats">
+                <div class="container">
+                    <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Restaurants</div></div>
+                    <div class="stat"><div class="stat-num">\$2M+</div><div class="stat-label">Food Costs Saved</div></div>
+                    <div class="stat"><div class="stat-num">10K+</div><div class="stat-label">Hours Saved Monthly</div></div>
+                </div>
+            </section>
+            <section class="features" id="features">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Everything You Need</h2>
+                        <p>Powerful features designed for restaurant operations.</p>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-card"><div class="feature-icon">📱</div><h3>Mobile Inventory</h3><p>Count stock on your phone. At the warehouse, in the walk-in, anywhere.</p></div>
+                        <div class="feature-card"><div class="feature-icon">🔄</div><h3>Auto-Reorder</h3><p>Set rules and let Restocka suggest orders when items run low.</p></div>
+                        <div class="feature-card"><div class="feature-icon">📊</div><h3>Smart Analytics</h3><p>Know your costs, track waste, optimize orders with data.</p></div>
+                        <div class="feature-card"><div class="feature-icon">🔔</div><h3>Low Stock Alerts</h3><p>Never be surprised. Get notified before you run out.</p></div>
+                        <div class="feature-card"><div class="feature-icon">👥</div><h3>Team Management</h3><p>Multiple locations, multiple users. Track everyone from one dashboard.</p></div>
+                        <div class="feature-card"><div class="feature-icon">🗑️</div><h3>Waste Tracking</h3><p>Log spoiled items and track waste to reduce costs.</p></div>
+                    </div>
+                </div>
+            </section>
+            <section class="pricing" id="pricing">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Simple Pricing</h2>
+                        <p>Start free, upgrade when you're ready.</p>
+                    </div>
+                    <div class="pricing-grid">
+                        <div class="price-card">
+                            <h3>Free</h3>
+                            <div class="price">\$0<span>/forever</span></div>
+                            <ul class="price-features">
+                                <li>1 location</li><li>5 products</li><li>10 orders/month</li><li>Basic tracking</li>
+                            </ul>
+                            <a href="https://signup.restocka.app" class="btn btn-outline" style="width:100%;">Get Started</a>
+                        </div>
+                        <div class="price-card popular">
+                            <div class="popular-badge">Most Popular</div>
+                            <h3>Pro</h3>
+                            <div class="price">\$29<span>/month</span></div>
+                            <ul class="price-features">
+                                <li>3 locations</li><li>50 products</li><li>100 orders/month</li><li>Auto-reorder</li><li>Analytics</li><li>Priority support</li>
+                            </ul>
+                            <a href="https://signup.restocka.app" class="btn btn-primary" style="width:100%;">Start Free Trial</a>
+                        </div>
+                        <div class="price-card">
+                            <h3>Business</h3>
+                            <div class="price">\$79<span>/month</span></div>
+                            <ul class="price-features">
+                                <li>Unlimited everything</li><li>Full auto-reorder</li><li>Advanced analytics</li><li>API access</li><li>24/7 support</li>
+                            </ul>
+                            <a href="https://signup.restocka.app" class="btn btn-outline" style="width:100%;">Contact Sales</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="cta">
+                <div class="container">
+                    <h2>Ready to Take Control?</h2>
+                    <p>Start your 7-day free trial today. No credit card required.</p>
+                    <a href="https://signup.restocka.app" class="btn">Create Free Account</a>
+                </div>
+            </section>
+            <footer>
+                <div class="container">
+                    <a href="https://landing.restocka.app" class="logo">Restock<span>a</span></a>
+                    <p style="margin-top:8px;">Restaurant inventory management made simple.</p>
+                    <div class="links">
+                        <a href="https://signup.restocka.app">Sign Up</a>
+                        <a href="https://app.restocka.app">Login</a>
+                        <a href="#">Privacy</a>
+                        <a href="#">Terms</a>
+                    </div>
+                    <p style="margin-top:24px; color:#94a3b8;">© 2026 Restocka. All rights reserved.</p>
+                </div>
+            </footer>
+        \`;
     }
     
-    function toggleLang() {
-        document.getElementById('langDropdown').classList.toggle('active');
+    // Render Signup Page
+    function renderSignup() {
+        document.getElementById('page-title').textContent = 'Get Started - Restocka';
+        document.getElementById('dynamic-styles').textContent = signupStyles;
+        document.getElementById('page-body').innerHTML = \`
+            <header><div class="container"><a href="https://landing.restocka.app" class="logo">Restock<span>a</span></a></div></header>
+            <main class="container">
+                <div class="progress">
+                    <div class="step active" id="step1">1</div><div class="step-line" id="line1"></div>
+                    <div class="step" id="step2">2</div><div class="step-line" id="line2"></div>
+                    <div class="step" id="step3">3</div>
+                </div>
+                <div class="card">
+                    <div id="step1-form">
+                        <h1>Create Your Account</h1>
+                        <p class="subtitle">Start your 7-day free trial. No credit card required.</p>
+                        <form id="signup-form" onsubmit="handleSignup(event)">
+                            <div class="input-group">
+                                <label>Email Address</label>
+                                <input type="email" id="email" placeholder="you@restaurant.com" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Password</label>
+                                <input type="password" id="password" placeholder="Create a strong password" minlength="8" required>
+                                <p class="hint">At least 8 characters</p>
+                            </div>
+                            <div class="input-group">
+                                <label>Restaurant Name</label>
+                                <input type="text" id="restaurantName" placeholder="e.g., La Cocina Restaurant" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="submit-btn">Continue to Step 2 →</button>
+                        </form>
+                        <div class="benefits">
+                            <div class="benefit"><div class="benefit-icon">✓</div><span class="benefit-text">7-day free trial of Pro features</span></div>
+                            <div class="benefit"><div class="benefit-icon">✓</div><span class="benefit-text">No credit card required</span></div>
+                            <div class="benefit"><div class="benefit-icon">✓</div><span class="benefit-text">Cancel anytime</span></div>
+                        </div>
+                    </div>
+                    <div id="step2-form" style="display:none;">
+                        <h1>Add Your Location</h1>
+                        <p class="subtitle">Tell us about your first restaurant location.</p>
+                        <form onsubmit="handleStep2(event)">
+                            <div class="input-group">
+                                <label>Location Name</label>
+                                <input type="text" id="locationName" placeholder="e.g., Main Branch" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Address (Optional)</label>
+                                <input type="text" id="locationAddress" placeholder="e.g., 123 Main St">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Continue to Step 3 →</button>
+                            <button type="button" class="btn btn-secondary" onclick="goBack(1)">← Back</button>
+                        </form>
+                    </div>
+                    <div id="step3-form" style="display:none;">
+                        <h1>You're All Set!</h1>
+                        <p class="subtitle">Your restaurant is ready. Start tracking inventory today.</p>
+                        <div style="text-align:center;padding:20px 0;">
+                            <div style="font-size:48px;margin-bottom:16px;">🎉</div>
+                            <p style="color:#0d9488;font-weight:600;margin-bottom:8px;">7-Day Free Trial Activated!</p>
+                            <p style="color:#64748b;font-size:14px;">Pro features are now enabled.</p>
+                        </div>
+                        <a href="https://app.restocka.app" class="btn btn-primary" style="display:block;text-align:center;text-decoration:none;">Open Restocka App →</a>
+                        <button onclick="window.location.href='https://app.restocka.app'" class="btn btn-secondary">Explore Dashboard</button>
+                        <div style="margin-top:24px;padding:16px;background:#f0fdfa;border-radius:12px;">
+                            <p style="font-size:14px;color:#0f766e;font-weight:500;">💡 Quick Tip</p>
+                            <p style="font-size:13px;color:#64748b;margin-top:4px;">Add your products first, then set up reorder rules for automated ordering.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <footer>
+                <p>© 2026 Restocka. All rights reserved.</p>
+            </footer>
+            <script>
+                let currentStep = 1;
+                function updateProgress() {
+                    for (let i=1;i<=3;i++) {
+                        const step=document.getElementById('step'+i);
+                        step.classList.remove('active','completed');
+                        if(i<currentStep) step.classList.add('completed');
+                        if(i===currentStep) step.classList.add('active');
+                    }
+                    for(let i=1;i<3;i++) {
+                        const line=document.getElementById('line'+i);
+                        line.classList.remove('active');
+                        if(i<currentStep) line.classList.add('active');
+                    }
+                }
+                function showStep(step) {
+                    document.getElementById('step1-form').style.display=step===1?'block':'none';
+                    document.getElementById('step2-form').style.display=step===2?'block':'none';
+                    document.getElementById('step3-form').style.display=step===3?'block':'none';
+                    currentStep=step;updateProgress();
+                }
+                function goBack(step){showStep(step);}
+                async function handleSignup(e){
+                    e.preventDefault();
+                    const btn=document.getElementById('submit-btn');
+                    btn.disabled=true;btn.textContent='Creating Account...';
+                    await new Promise(r=>setTimeout(r,1000));
+                    localStorage.setItem('restocka_user',JSON.stringify({email:document.getElementById('email').value,restaurantName:document.getElementById('restaurantName').value}));
+                    btn.disabled=false;btn.textContent='Continue to Step 2 →';showStep(2);
+                }
+                function handleStep2(e){
+                    e.preventDefault();
+                    const data=JSON.parse(localStorage.getItem('restocka_user')||'{}');
+                    data.locationName=document.getElementById('locationName').value;
+                    data.locationAddress=document.getElementById('locationAddress').value;
+                    localStorage.setItem('restocka_user',JSON.stringify(data));
+                    showStep(3);
+                }
+            <\/script>
+        \`;
     }
     
-    function setLang(lang) {
-        currentLang = lang;
-        document.getElementById('langDropdown').classList.remove('active');
-        document.getElementById('currentLang').innerHTML = 
-            `<span class="lang-flag">${langFlags[lang]}</span><span>${langNames[lang]}</span>` +
-            `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-        
-        // Update all translatable elements
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (translations[lang][key]) el.textContent = translations[lang][key];
-        });
-        
-        // Update hero section
-        const heroTitle = document.querySelector('.hero h1');
-        heroTitle.innerHTML = translations[lang].hero_title + '<br><span>' + translations[lang].hero_title_span + '</span>';
-        document.querySelector('.hero p').textContent = translations[lang].hero_subtitle;
-        document.querySelectorAll('.hero-buttons .btn')[0].textContent = translations[lang].hero_cta_primary;
-        document.querySelectorAll('.hero-buttons .btn')[1].textContent = translations[lang].hero_cta_secondary;
-        document.querySelector('.phone-screen > div > div:first-child').textContent = translations[lang].hero_total_value;
-        document.querySelector('.phone-screen > div > div:nth-child(3) > div:first-child').textContent = translations[lang].hero_low_stock;
-        
-        // Update problem section
-        document.querySelector('.problem h2').textContent = translations[lang].problem_title;
-        document.querySelector('.problem > .container > p').textContent = translations[lang].problem_subtitle;
-        const painCards = document.querySelectorAll('.pain-card');
-        painCards[0].querySelector('h3').textContent = translations[lang].pain_1_title;
-        painCards[0].querySelector('p').textContent = translations[lang].pain_1_text;
-        painCards[1].querySelector('h3').textContent = translations[lang].pain_2_title;
-        painCards[1].querySelector('p').textContent = translations[lang].pain_2_text;
-        painCards[2].querySelector('h3').textContent = translations[lang].pain_3_title;
-        painCards[2].querySelector('p').textContent = translations[lang].pain_3_text;
-        
-        // Update solution section
-        document.querySelector('.solution h2').textContent = translations[lang].solution_title;
-        document.querySelector('.solution > .container > p').textContent = translations[lang].solution_subtitle;
-        const featureCards = document.querySelectorAll('.feature-card');
-        featureCards[0].querySelector('h3').textContent = translations[lang].feat_1_title;
-        featureCards[0].querySelector('p').textContent = translations[lang].feat_1_text;
-        featureCards[1].querySelector('h3').textContent = translations[lang].feat_2_title;
-        featureCards[1].querySelector('p').textContent = translations[lang].feat_2_text;
-        featureCards[2].querySelector('h3').textContent = translations[lang].feat_3_title;
-        featureCards[2].querySelector('p').textContent = translations[lang].feat_3_text;
-        featureCards[3].querySelector('h3').textContent = translations[lang].feat_4_title;
-        featureCards[3].querySelector('p').textContent = translations[lang].feat_4_text;
-        featureCards[4].querySelector('h3').textContent = translations[lang].feat_5_title;
-        featureCards[4].querySelector('p').textContent = translations[lang].feat_5_text;
-        featureCards[5].querySelector('h3').textContent = translations[lang].feat_6_title;
-        featureCards[5].querySelector('p').textContent = translations[lang].feat_6_text;
-        
-        // Update social proof section
-        document.querySelector('.social-proof h2').textContent = translations[lang].social_title;
-        document.querySelector('.social-proof > .container > p').textContent = translations[lang].social_subtitle;
-        const metrics = document.querySelectorAll('.metric');
-        metrics[0].querySelector('.metric-number').textContent = translations[lang].metric_1;
-        metrics[0].querySelector('.metric-label').textContent = translations[lang].metric_1_label;
-        metrics[1].querySelector('.metric-number').textContent = translations[lang].metric_2;
-        metrics[1].querySelector('.metric-label').textContent = translations[lang].metric_2_label;
-        metrics[2].querySelector('.metric-number').textContent = translations[lang].metric_3;
-        metrics[2].querySelector('.metric-label').textContent = translations[lang].metric_3_label;
-        
-        // Update pricing section
-        document.querySelector('.pricing h2').textContent = translations[lang].pricing_title;
-        document.querySelector('.pricing > .container > p').textContent = translations[lang].pricing_subtitle;
-        
-        // Update CTA section
-        document.querySelector('.cta h2').textContent = translations[lang].cta_title;
-        document.querySelector('.cta p').textContent = translations[lang].cta_subtitle;
-        document.querySelector('.cta .btn').textContent = translations[lang].cta_btn;
-        
-        // Update footer
-        const footerLinks = document.querySelectorAll('footer a');
-        footerLinks[0].textContent = translations[lang].footer_about;
-        footerLinks[1].textContent = translations[lang].footer_features;
-        footerLinks[2].textContent = translations[lang].footer_pricing;
-        footerLinks[3].textContent = translations[lang].footer_contact;
-        footerLinks[4].textContent = translations[lang].footer_privacy;
-        footerLinks[5].textContent = translations[lang].footer_terms;
-        document.querySelector('footer p').textContent = translations[lang].footer_copyright;
-        
-        // Update dropdown active states
-        document.querySelectorAll('.lang-option').forEach(opt => {
-            opt.classList.toggle('active', opt.onclick.toString().includes(lang));
-        });
-        
-        // Save preference
-        localStorage.setItem('restocka_lang', lang);
+    // Render Login Page
+    function renderLogin() {
+        document.getElementById('page-title').textContent = 'Login - Restocka';
+        document.getElementById('dynamic-styles').textContent = loginStyles;
+        document.getElementById('page-body').innerHTML = \`
+            <header><div class="container"><a href="https://landing.restocka.app" class="logo">Restock<span>a</span></a></div></header>
+            <main class="container">
+                <div class="card login-card">
+                    <h1>Welcome Back</h1>
+                    <p class="subtitle">Sign in to access your restaurant dashboard.</p>
+                    <form onsubmit="handleLogin(event)">
+                        <div class="input-group">
+                            <label>Email Address</label>
+                            <input type="email" id="loginEmail" placeholder="you@restaurant.com" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Password</label>
+                            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Sign In</button>
+                    </form>
+                    <div class="divider"><div class="divider-line"></div><span class="divider-text">or</span><div class="divider-line"></div></div>
+                    <p class="demo-link"><a href="https://app.restocka.app">Try the demo →</a></p>
+                </div>
+            </main>
+            <footer>
+                <p>Don't have an account? <a href="https://signup.restocka.app">Sign up for free</a></p>
+                <p style="margin-top:8px;">© 2026 Restocka. All rights reserved.</p>
+            </footer>
+            <script>
+                function handleLogin(e){e.preventDefault();window.location.href='https://app.restocka.app';}
+            <\/script>
+        \`;
     }
     
-    function toggleMenu() {
-        document.getElementById('navLinks').classList.toggle('active');
+    // Render App Placeholder
+    function renderApp() {
+        document.getElementById('page-title').textContent = 'Restocka App';
+        document.getElementById('dynamic-styles').textContent = appStyles;
+        document.getElementById('page-body').innerHTML = \`
+            <div class="app-container">
+                <div class="app-header">
+                    <h1 class="app-title">Restocka</h1>
+                    <p class="app-subtitle">Restaurant Inventory Management</p>
+                </div>
+                <div class="login-prompt">
+                    <h2>Sign in to continue</h2>
+                    <p>Access your inventory dashboard, orders, and analytics.</p>
+                    <a href="https://login.restocka.app" class="btn btn-primary">Sign In</a>
+                    <p style="margin-top:16px;color:#64748b;font-size:14px;">New here? <a href="https://signup.restocka.app" style="color:#0d9488;">Create free account</a></p>
+                </div>
+            </div>
+        \`;
     }
     
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-        const savedLang = localStorage.getItem('restocka_lang') || detectLang();
-        setLang(savedLang);
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.lang-selector')) {
-                document.getElementById('langDropdown').classList.remove('active');
-            }
-        });
-    });
+    // Router
+    if (isSignup) {
+        renderSignup();
+    } else if (isApp && hostname.includes('login')) {
+        renderLogin();
+    } else if (isApp) {
+        renderApp();
+    } else {
+        renderLanding();
+    }
     </script>
 </body>
 </html>

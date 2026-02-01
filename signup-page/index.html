@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started - Restocka</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #f8fafc; color: #0f172a; min-height: 100vh; }
+        .container { max-width: 480px; margin: 0 auto; padding: 0 24px; }
+        
+        /* Header */
+        header { padding: 32px 0; text-align: center; }
+        .logo { font-size: 28px; font-weight: 700; color: #0d9488; }
+        .logo span { color: #0f172a; }
+        
+        /* Progress Steps */
+        .progress { display: flex; justify-content: center; gap: 8px; margin-bottom: 40px; }
+        .step { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; background: #e2e8f0; color: #64748b; }
+        .step.active { background: #0d9488; color: white; }
+        .step.completed { background: #0d9488; color: white; }
+        .step-line { width: 40px; height: 2px; background: #e2e8f0; align-self: center; }
+        .step-line.active { background: #0d9488; }
+        
+        /* Card */
+        .card { background: white; border-radius: 20px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        
+        h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: #0f172a; }
+        .subtitle { color: #64748b; font-size: 15px; margin-bottom: 32px; line-height: 1.5; }
+        
+        /* Form Elements */
+        label { display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px; }
+        .input-group { margin-bottom: 20px; }
+        input, select { width: 100%; padding: 14px 16px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 15px; transition: all 0.2s; background: #fff; }
+        input:focus, select:focus { outline: none; border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13,148,136,0.1); }
+        input::placeholder { color: #94a3b8; }
+        
+        .hint { font-size: 12px; color: #94a3b8; margin-top: 6px; }
+        
+        /* Buttons */
+        .btn { width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background: #0d9488; color: white; }
+        .btn-primary:hover { background: #0f766e; }
+        .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+        .btn-secondary { background: #f1f5f9; color: #475569; margin-top: 12px; }
+        .btn-secondary:hover { background: #e2e8f0; }
+        
+        /* Benefits */
+        .benefits { margin-top: 32px; padding-top: 24px; border-top: 1px solid #e2e8f0; }
+        .benefit { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .benefit-icon { width: 24px; height: 24px; background: #f0fdfa; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+        .benefit-text { font-size: 14px; color: #475569; }
+        
+        /* Footer */
+        footer { text-align: center; padding: 32px 0; color: #94a3b8; font-size: 13px; }
+        footer a { color: #0d9488; text-decoration: none; }
+        
+        /* Social Proof */
+        .social { display: flex; justify-content: center; gap: 16px; margin-top: 24px; }
+        .social-text { font-size: 13px; color: #94a3b8; }
+        
+        /* Mobile */
+        @media (max-width: 480px) {
+            .card { padding: 24px; border-radius: 16px; }
+            h1 { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="https://landing.restocka.app" class="logo">Restock<span>a</span></a>
+        </div>
+    </header>
+    
+    <main class="container">
+        <!-- Progress -->
+        <div class="progress">
+            <div class="step active" id="step1">1</div>
+            <div class="step-line" id="line1"></div>
+            <div class="step" id="step2">2</div>
+            <div class="step-line" id="line2"></div>
+            <div class="step" id="step3">3</div>
+        </div>
+        
+        <div class="card">
+            <!-- Step 1: Account -->
+            <div id="step1-form">
+                <h1>Create Your Account</h1>
+                <p class="subtitle">Start your 7-day free trial. No credit card required.</p>
+                
+                <form id="signup-form" onsubmit="handleSignup(event)">
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="email" placeholder="you@restaurant.com" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="password" placeholder="Create a strong password" minlength="8" required>
+                        <p class="hint">At least 8 characters</p>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Restaurant Name</label>
+                        <input type="text" id="restaurantName" placeholder="e.g., La Cocina Restaurant" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="submit-btn">
+                        Continue to Step 2 →
+                    </button>
+                </form>
+                
+                <div class="benefits">
+                    <div class="benefit">
+                        <div class="benefit-icon">✓</div>
+                        <span class="benefit-text">7-day free trial of Pro features</span>
+                    </div>
+                    <div class="benefit">
+                        <div class="benefit-icon">✓</div>
+                        <span class="benefit-text">No credit card required</span>
+                    </div>
+                    <div class="benefit">
+                        <div class="benefit-icon">✓</div>
+                        <span class="benefit-text">Cancel anytime</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 2: Location -->
+            <div id="step2-form" style="display:none;">
+                <h1>Add Your Location</h1>
+                <p class="subtitle">Tell us about your first restaurant location.</p>
+                
+                <form onsubmit="handleStep2(event)">
+                    <div class="input-group">
+                        <label>Location Name</label>
+                        <input type="text" id="locationName" placeholder="e.g., Main Branch" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Address (Optional)</label>
+                        <input type="text" id="locationAddress" placeholder="e.g., 123 Main St">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        Continue to Step 3 →
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="goBack(1)">
+                        ← Back
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Step 3: Done -->
+            <div id="step3-form" style="display:none;">
+                <h1>You're All Set!</h1>
+                <p class="subtitle">Your restaurant is ready. Start tracking inventory today.</p>
+                
+                <div style="text-align: center; padding: 20px 0;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🎉</div>
+                    <p style="color: #0d9488; font-weight: 600; margin-bottom: 8px;">7-Day Free Trial Activated!</p>
+                    <p style="color: #64748b; font-size: 14px;">Pro features are now enabled.</p>
+                </div>
+                
+                <a href="https://app.restocka.app" class="btn btn-primary" style="display: block; text-align: center; text-decoration: none;">
+                    Open Restocka App →
+                </a>
+                
+                <button onclick="goToApp()" class="btn btn-secondary">
+                    Explore Dashboard
+                </button>
+                
+                <div style="margin-top: 24px; padding: 16px; background: #f0fdfa; border-radius: 12px;">
+                    <p style="font-size: 14px; color: #0f766e; font-weight: 500;">💡 Quick Tip</p>
+                    <p style="font-size: 13px; color: #64748b; margin-top: 4px;">
+                        Add your products first, then set up reorder rules for automated ordering.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="social">
+            <span class="social-text">500+ restaurants trust Restocka</span>
+        </div>
+    </main>
+    
+    <footer>
+        <p>By signing up, you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a></p>
+        <p style="margin-top: 8px;">© 2026 Restocka. All rights reserved.</p>
+    </footer>
+    
+    <script>
+    let currentStep = 1;
+    let userData = { email: '', password: '', restaurantName: '', locationName: '', locationAddress: '' };
+    
+    function updateProgress() {
+        for (let i = 1; i <= 3; i++) {
+            const step = document.getElementById('step' + i);
+            step.classList.remove('active', 'completed');
+            if (i < currentStep) step.classList.add('completed');
+            if (i === currentStep) step.classList.add('active');
+        }
+        for (let i = 1; i < 3; i++) {
+            const line = document.getElementById('line' + i);
+            line.classList.remove('active');
+            if (i < currentStep) line.classList.add('active');
+        }
+    }
+    
+    function showStep(step) {
+        document.getElementById('step1-form').style.display = step === 1 ? 'block' : 'none';
+        document.getElementById('step2-form').style.display = step === 2 ? 'block' : 'none';
+        document.getElementById('step3-form').style.display = step === 3 ? 'block' : 'none';
+        currentStep = step;
+        updateProgress();
+    }
+    
+    function goBack(step) {
+        showStep(step);
+    }
+    
+    async function handleSignup(e) {
+        e.preventDefault();
+        userData.email = document.getElementById('email').value;
+        userData.password = document.getElementById('password').value;
+        userData.restaurantName = document.getElementById('restaurantName').value;
+        
+        const btn = document.getElementById('submit-btn');
+        btn.disabled = true;
+        btn.textContent = 'Creating Account...';
+        
+        // Simulate API call - in production, call your auth API
+        await new Promise(r => setTimeout(r, 1000));
+        
+        // Save to localStorage for demo
+        localStorage.setItem('restocka_user', JSON.stringify(userData));
+        
+        btn.disabled = false;
+        btn.textContent = 'Continue to Step 2 →';
+        showStep(2);
+    }
+    
+    function handleStep2(e) {
+        e.preventDefault();
+        userData.locationName = document.getElementById('locationName').value;
+        userData.locationAddress = document.getElementById('locationAddress').value;
+        
+        // Save complete data
+        localStorage.setItem('restocka_user', JSON.stringify(userData));
+        
+        showStep(3);
+    }
+    
+    function goToApp() {
+        window.location.href = 'https://app.restocka.app';
+    }
+    
+    // Check for existing session
+    document.addEventListener('DOMContentLoaded', function() {
+        const existing = localStorage.getItem('restocka_user');
+        if (existing) {
+            showStep(3);
+        }
+    });
+    </script>
+</body>
+</html>
