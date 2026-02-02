@@ -1,0 +1,5 @@
+{
+  "runtime": "bun",
+  "handler": "api/index.js",
+  "regions": ["iad1"]
+}
