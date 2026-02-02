@@ -1,5 +1,4 @@
 {
-  "runtime": "bun",
-  "handler": "api/index.js",
-  "regions": ["iad1"]
+  "runtime": "edge",
+  "entrypoint": "api/vercel.ts"
 }

@@ -37,9 +37,13 @@ app.use(
 );
 
 app.use("*", async (c, next) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
-  c.set("user", session?.user ?? null);
-  c.set("session", session?.session ?? null);
+  try {
+    const session = await auth.api.getSession({ headers: c.req.raw.headers });
+    c.set("user", session?.user ?? null);
+    c.set("session", session?.session ?? null);
+  } catch (e) {
+    // Auth might fail on routes that don't require auth
+  }
   return next();
 });
 
@@ -76,10 +80,13 @@ app.get("/health", (c) => {
   return c.json({ status: "ok" });
 });
 
+app.notFound((c) => {
+  return c.json({ error: "Not Found", path: c.req.path }, 404);
+});
+
 export const GET = handle(app);
 export const POST = handle(app);
 export const PUT = handle(app);
 export const DELETE = handle(app);
 export const PATCH = handle(app);
 export const OPTIONS = handle(app);
-
