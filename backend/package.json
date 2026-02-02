@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "bun run --hot src/index.ts",
-    "build": "bun build src/vercel.ts --outfile dist/index.js --target bun",
+    "build": "bun build src/vercel.ts --outfile api/index.js --target bun",
     "start": "bun run dist/index.js",
     "studio": "cloud-studio --port 3001 --hostname 0.0.0.0",
     "postinstall": "prisma generate",
