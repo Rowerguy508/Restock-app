@@ -206,4 +206,4 @@ app.get("/insights-dashboard", requireAuth, async (c) => {
   }
 });
 
-export default app;
+export const aiRouter = app;

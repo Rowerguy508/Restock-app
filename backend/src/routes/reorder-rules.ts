@@ -4,7 +4,7 @@ import { type AppType } from "../types";
 import {
   createReorderRuleRequestSchema,
   updateReorderRuleRequestSchema,
-} from "@/shared/contracts";
+} from "../../shared/contracts";
 
 const reorderRulesRouter = new Hono<AppType>();
 

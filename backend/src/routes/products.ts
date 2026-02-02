@@ -4,7 +4,7 @@ import { type AppType } from "../types";
 import {
   createProductRequestSchema,
   updateProductRequestSchema,
-} from "@/shared/contracts";
+} from "../../shared/contracts";
 import { getOrganizationSubscription, SUBSCRIPTION_TIERS } from "../subscription";
 
 const productsRouter = new Hono<AppType>();

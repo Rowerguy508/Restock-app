@@ -1,12 +1,12 @@
 {
-  "name": "server",
+  "name": "restocka-backend",
   "module": "src/index.ts",
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=development bun run --hot src/index.ts",
-    "build": "NODE_ENV=production bun build src/index.ts --outdir dist --target bun",
-    "start": "NODE_ENV=production bun run dist/index.js",
+    "dev": "bun run --hot src/index.ts",
+    "build": "bun build src/vercel.ts --outfile dist/index.js --target bun",
+    "start": "bun run dist/index.js",
     "studio": "cloud-studio --port 3001 --hostname 0.0.0.0",
     "postinstall": "prisma generate",
     "typecheck": "tsc --noEmit"

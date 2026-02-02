@@ -416,4 +416,4 @@ app.post("/portal", requireAuth, async (c) => {
   }
 });
 
-export default app;
+export const subscriptionRouter = app;

@@ -159,23 +159,23 @@ export default function AIInsightsScreen() {
       <View className="px-4 -mt-4">
         <View className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
           <View className="flex-row flex-wrap gap-3">
-            <View className="items-center flex-1 min-w="80">
+            <View className='items-center flex-1 min-w="80"'>
               <Text className="text-2xl font-bold text-slate-900">{quickStats.totalProducts}</Text>
               <Text className="text-xs text-slate-500">Products</Text>
             </View>
-            <View className="items-center flex-1 min-w="80">
+            <View className='items-center flex-1 min-w="80"'>
               <Text className={`text-2xl font-bold ${quickStats.criticalItems > 0 ? "text-rose-500" : "text-emerald-500"}`}>
                 {quickStats.criticalItems}
               </Text>
               <Text className="text-xs text-slate-500">Critical</Text>
             </View>
-            <View className="items-center flex-1 min-w="80">
+            <View className='items-center flex-1 min-w="80"'>
               <Text className={`text-2xl font-bold ${quickStats.urgentReorders > 0 ? "text-orange-500" : "text-emerald-500"}`}>
                 {quickStats.urgentReorders}
               </Text>
               <Text className="text-xs text-slate-500">Urgent Reorders</Text>
             </View>
-            <View className="items-center flex-1 min-w="80">
+            <View className='items-center flex-1 min-w="80"'>
               <Text className="text-2xl font-bold text-emerald-600">${quickStats.potentialSavings.toLocaleString()}</Text>
               <Text className="text-xs text-slate-500">Potential Savings</Text>
             </View>

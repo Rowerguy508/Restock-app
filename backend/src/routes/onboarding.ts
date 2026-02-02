@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { db } from "../db";
 import { type AppType } from "../types";
-import { createOrganizationRequestSchema } from "@/shared/contracts";
+import { createOrganizationRequestSchema } from "../../shared/contracts";
 
 const onboardingRouter = new Hono<AppType>();
 

@@ -1,7 +1,7 @@
 import { Hono, type Context } from "hono";
 import { db } from "../db";
 import { type AppType } from "../types";
-import { createSupplierRequestSchema } from "@/shared/contracts";
+import { createSupplierRequestSchema } from "../../shared/contracts";
 
 const suppliersRouter = new Hono<AppType>();
 

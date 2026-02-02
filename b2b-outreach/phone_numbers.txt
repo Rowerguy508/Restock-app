@@ -1,0 +1,22 @@
+# Dominican Republic Business Phone Numbers
+# Format: One phone number per line
+# Dominican Republic: Country code +1, area codes: 809, 829, 849
+# WhatsApp format: 1XXXXXXXXXX@c.us
+
+# Sample phone numbers (replace with actual DR business numbers)
+# These are placeholder examples - replace with real phone numbers
+
+# Restaurants (example format)
+18091234567
+18092345678
+18093456789
+
+# Add more phone numbers here, one per line
+# For 137 DR business phone numbers, collect from:
+# - Google Maps business listings
+# - Dominican Republic business directories
+# - Restaurant association directories (ADOCARNE)
+# - Chamber of Commerce listings
+
+# IMPORTANT: Only include phone numbers that have WhatsApp
+# Verify numbers before adding to this list

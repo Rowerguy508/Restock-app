@@ -2,7 +2,7 @@ import { Hono, type Context } from "hono";
 import { db } from "../db";
 import { getOrganizationSubscription, SUBSCRIPTION_TIERS } from "../subscription";
 import { type AppType } from "../types";
-import { createLocationRequestSchema } from "@/shared/contracts";
+import { createLocationRequestSchema } from "../../shared/contracts";
 
 const locationsRouter = new Hono<AppType>();
 

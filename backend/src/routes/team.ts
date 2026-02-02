@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { db } from "../db";
 import { type AppType } from "../types";
-import { inviteTeamMemberRequestSchema } from "../../../shared/contracts";
+import { inviteTeamMemberRequestSchema } from "../../shared/contracts";
 import { getOrganizationSubscription, SUBSCRIPTION_TIERS } from "../subscription";
 
 const teamRouter = new Hono<AppType>();

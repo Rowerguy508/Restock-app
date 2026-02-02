@@ -17,20 +17,20 @@ import { db } from "./db";
 //   - And many more... (see Better Auth docs)
 //
 // This configuration includes:
-//   - Prisma adapter for SQLite database
+//   - Prisma adapter for PostgreSQL database (Supabase)
 //   - Expo plugin for React Native support
 //   - Email/password authentication
 //   - Trusted origins for CORS
 console.log("🔐 [Auth] Initializing Better Auth...");
 export const auth = betterAuth({
   database: prismaAdapter(db, {
-    provider: "sqlite",
+    provider: "postgresql",
   }),
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BACKEND_URL,
   plugins: [expo()],
   trustedOrigins: [
-    "vibecode://", // Expo app scheme (IMPORTANT: Update if you change app.json scheme)
+    "vibecode://",
     "http://localhost:3000",
     "http://localhost:8081",
     "*.vibecodeapp.com",
@@ -38,7 +38,6 @@ export const auth = betterAuth({
     "*.vibecode.dev",
     "*.vibecode.run",
     env.BACKEND_URL,
-    // "vibecode://*/*", // Trust all Expo development URLs
   ],
   emailAndPassword: {
     enabled: true,
@@ -48,7 +47,6 @@ export const auth = betterAuth({
       enabled: true,
     },
     disableCSRFCheck: true,
-    // Cross-origin cookie settings for iframe web preview
     defaultCookieAttributes: {
       sameSite: "none",
       secure: true,

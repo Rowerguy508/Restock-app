@@ -1,7 +1,7 @@
 import { Hono, type Context } from "hono";
 import { db } from "../db";
 import { type AppType } from "../types";
-import { type StockStatus } from "@/shared/contracts";
+import { type StockStatus } from "../../shared/contracts";
 
 const dashboardRouter = new Hono<AppType>();
 

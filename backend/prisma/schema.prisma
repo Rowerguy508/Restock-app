@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -133,11 +133,14 @@ model Location {
   updatedAt      DateTime     @updatedAt
 
   // Relations
-  stockLevels    StockLevel[]
-  purchaseOrders PurchaseOrder[]
-  memberships    Membership[]
-  alerts         Alert[]
-  auditLogs      AuditLog[]
+  stockLevels        StockLevel[]
+  purchaseOrders     PurchaseOrder[]
+  memberships        Membership[]
+  alerts             Alert[]
+  auditLogs          AuditLog[]
+  wasteEntries       WasteEntry[]
+  inventorySnapshots InventorySnapshot[]
+  expiryEntries      ExpiryEntry[]
 
   @@map("location")
 }
@@ -177,6 +180,8 @@ model Product {
   stockLevels        StockLevel[]
   reorderRules       ReorderRule[]
   purchaseOrderItems PurchaseOrderItem[]
+  wasteEntries       WasteEntry[]
+  expiryEntries      ExpiryEntry[]
 
   @@unique([organizationId, sku])
   @@map("product")

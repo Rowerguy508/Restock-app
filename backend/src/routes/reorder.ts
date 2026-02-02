@@ -1,7 +1,7 @@
 import { Hono, type Context } from "hono";
 import { db } from "../db";
 import { type AppType } from "../types";
-import { triggerReorderCheckRequestSchema } from "@/shared/contracts";
+import { triggerReorderCheckRequestSchema } from "../../shared/contracts";
 
 const reorderRouter = new Hono<AppType>();
 
