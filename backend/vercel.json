@@ -3,10 +3,5 @@
   "buildCommand": "bun run build",
   "outputDirectory": "dist",
   "installCommand": "bun install",
-  "regions": ["iad1"],
-  "functions": {
-    "dist/index.js": {
-      "runtime": "bun@1.1.0"
-    }
-  }
+  "regions": ["iad1"]
 }
