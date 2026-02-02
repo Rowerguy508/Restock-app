@@ -2,10 +2,6 @@
   "framework": null,
   "buildCommand": "bun run build",
   "installCommand": "bun install",
-  "regions": ["iad1"],
-  "functions": {
-    "api/index.js": {
-      "runtime": "edge"
-    }
-  }
+  "outputDirectory": "api",
+  "regions": ["iad1"]
 }
