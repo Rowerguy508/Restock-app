@@ -1,13 +1,12 @@
 {
-  "framework": "hono",
+  "framework": null,
   "buildCommand": "bun run build",
   "outputDirectory": "dist",
   "installCommand": "bun install",
   "regions": ["iad1"],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index"
+  "functions": {
+    "dist/index.js": {
+      "runtime": "bun@1.1.0"
     }
-  ]
+  }
 }
