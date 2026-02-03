@@ -1,0 +1,169 @@
+#!/bin/bash
+# Poniente Backup Script
+# Automated backups for database and files
+
+set -e
+
+BACKUP_DIR="${BACKUP_DIR:-$HOME/.poniente/backups}"
+DATE=$(date +%Y%m%d_%H%M%S)
+RETENTION_DAYS=30
+
+# Colors
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+log() { echo -e "$(date '+%Y-%m-%d %H:%M:%S') ${GREEN}[BACKUP]${NC} $1"; }
+warn() { echo -e "$(date '+%Y-%m-%d %H:%M:%S') ${YELLOW}[BACKUP]${NC} $1"; }
+err() { echo -e "$(date '+%Y-%m-%d %H:%M:%S') ${RED}[BACKUP]${NC} $1"; }
+
+mkdir -p "$BACKUP_DIR"
+
+# Backup Git repo
+backup_git() {
+    log "Backing up Git repository..."
+    local backup_file="$BACKUP_DIR/restocka-git-$DATE.tar.gz"
+    tar -czf "$backup_file" -C /Users/claude/.openclaw/workspace .git 2>/dev/null || {
+        warn "Git backup failed"
+        return 1
+    }
+    log "Git backup: $backup_file"
+    echo "$backup_file"
+}
+
+# Backup config files
+backup_configs() {
+    log "Backing up configuration files..."
+    local backup_file="$BACKUP_DIR/configs-$DATE.tar.gz"
+    tar -czf "$backup_file" \
+        ~/Restock-app/.env.example \
+        ~/Restock-app/api/.env.example \
+        ~/.openclaw/claude/ 2>/dev/null || {
+        warn "Config backup failed"
+        return 1
+    }
+    log "Configs backup: $backup_file"
+    echo "$backup_file"
+}
+
+# Backup metrics
+backup_metrics() {
+    log "Backing up metrics..."
+    local backup_file="$BACKUP_DIR/metrics-$DATE.tar.gz"
+    tar -czf "$backup_file" "$HOME/.poniente/metrics" 2>/dev/null || {
+        warn "Metrics backup failed"
+        return 1
+    }
+    log "Metrics backup: $backup_file"
+    echo "$backup_file"
+}
+
+# Cleanup old backups
+cleanup() {
+    log "Cleaning up backups older than $RETENTION_DAYS days..."
+    local count=$(find "$BACKUP_DIR" -name "*.tar.gz" -mtime +$RETENTION_DAYS | wc -l)
+    find "$BACKUP_DIR" -name "*.tar.gz" -mtime +$RETENTION_DAYS -delete 2>/dev/null || true
+    log "Removed $count old backup files"
+}
+
+# List backups
+list_backups() {
+    echo ""
+    echo "Backups in $BACKUP_DIR:"
+    ls -lah "$BACKUP_DIR"/*.tar.gz 2>/dev/null | tail -10 || echo "No backups found"
+    echo ""
+    local total_size=$(du -sh "$BACKUP_DIR" 2>/dev/null | cut -f1 || echo "0")
+    echo "Total size: $total_size"
+}
+
+# Restore from backup
+restore() {
+    local file="$1"
+    if [ ! -f "$file" ]; then
+        err "Backup file not found: $file"
+        return 1
+    fi
+    
+    log "Restoring from $file..."
+    local type=$(basename "$file" | cut -d'-' -f2)
+    
+    case "$type" in
+        git)
+            tar -xzf "$file" -C /tmp/restore-git 2>/dev/null || {
+                err "Restore failed"
+                return 1
+            }
+            log "Git restored to /tmp/restore-git"
+            ;;
+        configs)
+            tar -xzf "$file" -C /tmp/restore-configs 2>/dev/null || {
+                err "Restore failed"
+                return 1
+            }
+            log "Configs restored to /tmp/restore-configs"
+            ;;
+        metrics)
+            tar -xzf "$file" -C /tmp/restore-metrics 2>/dev/null || {
+                err "Restore failed"
+                return 1
+            }
+            log "Metrics restored to /tmp/restore-metrics"
+            ;;
+        *)
+            warn "Unknown backup type: $type"
+            ;;
+    esac
+    
+    log "Restore complete"
+}
+
+# Main backup
+backup_all() {
+    log "Starting full backup..."
+    
+    local total=0
+    local success=0
+    
+    # Git
+    if backup_git >/dev/null 2>&1; then ((success++)); ((total++)); fi
+    
+    # Configs
+    if backup_configs >/dev/null 2>&1; then ((success++)); ((total++)); fi
+    
+    # Metrics
+    if backup_metrics >/dev/null 2>&1; then ((success++)); ((total++)); fi
+    
+    # Cleanup
+    cleanup
+    
+    log "Backup complete: $success/$total succeeded"
+}
+
+# Status
+status() {
+    echo ""
+    echo "Backup Status"
+    echo "============="
+    list_backups
+    
+    echo ""
+    echo "Next scheduled backup:"
+    crontab -l 2>/dev/null | grep backup || echo "No cron job configured"
+    
+    echo ""
+    echo "To schedule daily backup, add to crontab:"
+    echo "  0 2 * * * /Users/claudio/Restock-app/bin/backup all"
+}
+
+case "${1:-all}" in
+    all) backup_all ;;
+    git) backup_git ;;
+    configs) backup_configs ;;
+    metrics) backup_metrics ;;
+    cleanup) cleanup ;;
+    list) list_backups ;;
+    restore) restore "$2" ;;
+    status) status ;;
+    *) echo "Usage: $0 {all|git|configs|metrics|cleanup|list|restore <file>|status}" ;;
+esac
