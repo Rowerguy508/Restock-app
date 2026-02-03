@@ -1,0 +1,188 @@
+#!/bin/bash
+# Poniente Content Generator
+# Generates static pages from templates
+
+set -e
+
+TEMPLATES_DIR="templates"
+OUTPUT_DIR="generated"
+API_URL="${API_URL:-https://api-gilt-xi-28.vercel.app}"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+log() { echo -e "${GREEN}[gen]${NC} $1"; }
+warn() { echo -e "${YELLOW}[gen]${NC} $1"; }
+
+mkdir -p "$OUTPUT_DIR"
+
+# Fetch plans from API
+fetch_plans() {
+    log "Fetching plans from API..."
+    curl -s "$API_URL/api/plans" > "$OUTPUT_DIR/plans.json"
+    log "Plans saved to $OUTPUT_DIR/plans.json"
+}
+
+# Generate pricing page
+gen_pricing() {
+    log "Generating pricing page..."
+    cat > "$OUTPUT_DIR/pricing.html" << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pricing - Poniente</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: #f8fafc; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 60px 20px; text-align: center; }
+        h1 { font-size: 40px; margin-bottom: 12px; }
+        p { color: #64748b; margin-bottom: 40px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .card { background: white; padding: 32px; border-radius: 16px; border: 1px solid #e2e8f0; }
+        .card.popular { border: 2px solid #0d9488; }
+        .price { font-size: 40px; font-weight: 700; margin: 16px 0; }
+        .features { list-style: none; text-align: left; margin: 24px 0; }
+        .features li { padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+        .features li::before { content: "✓"; color: #0d9488; margin-right: 10px; }
+        .btn { display: block; padding: 14px; border-radius: 10px; text-decoration: none; font-weight: 600; }
+        .btn-primary { background: #0d9488; color: white; }
+        .btn-outline { border: 1px solid #e2e8f0; color: #0f172a; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simple Pricing</h1>
+        <p>Start free, upgrade when ready.</p>
+        <div class="grid" id="plans"></div>
+    </div>
+    <script>
+        fetch('/plans.json').then(r => r.json()).then(data => {
+            const grid = document.getElementById('plans');
+            grid.innerHTML = data.plans.map(p => {
+                const isPopular = p.id === 'PRO';
+                const price = p.price_monthly === 0 ? 'Free' : '$' + (p.price_monthly / 100);
+                return `<div class="card${isPopular ? ' popular' : ''}">
+                    <h3>${p.name}</h3>
+                    <div class="price">${price}</div>
+                    <ul class="features">
+                        <li>${p.max_locations === -1 ? 'Unlimited locations' : p.max_locations + ' location' + (p.max_locations > 1 ? 's' : '')}</li>
+                        <li>${p.max_products === -1 ? 'Unlimited products' : p.max_products + ' products'}</li>
+                    </ul>
+                    <a href="/signup?plan=${p.id}" class="btn ${isPopular ? 'btn-primary' : 'btn-outline'}">Get Started</a>
+                </div>`;
+            }).join('');
+        });
+    </script>
+</body>
+</html>
+HTMLEOF
+    log "Generated $OUTPUT_DIR/pricing.html"
+}
+
+# Generate about page
+gen_about() {
+    log "Generating about page..."
+    cat > "$OUTPUT_DIR/about.html" << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About - Poniente</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 60px 20px; line-height: 1.8; color: #0f172a; }
+        h1 { font-size: 40px; margin-bottom: 20px; color: #0d9488; }
+        h2 { font-size: 28px; margin: 40px 0 20px; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 40px 0; }
+        .stat { background: #f8fafc; padding: 24px; border-radius: 12px; text-align: center; }
+        .stat-num { font-size: 36px; font-weight: 700; color: #0d9488; }
+    </style>
+</head>
+<body>
+    <h1>🦞 About Poniente</h1>
+    <p>Poniente is an autonomous revenue protocol for restaurants. We're building AI agents that fund themselves through SaaS subscriptions and DeFi yield.</p>
+    
+    <h2>Our Mission</h2>
+    <p>Enable restaurants to never run out of ingredients again through smart inventory management and autonomous ordering.</p>
+    
+    <div class="stats">
+        <div class="stat"><div class="stat-num">500+</div><div>Restaurants</div></div>
+        <div class="stat"><div class="stat-num">$2M+</div><div>Costs Saved</div></div>
+        <div class="stat"><div class="stat-num">10K+</div><div>Hours Saved</div></div>
+    </div>
+    
+    <h2>Technology</h2>
+    <p>Built with modern tools: Vite + React frontend, Express + Supabase backend, Stripe payments, and Vercel infrastructure.</p>
+    
+    <h2>Autonomy</h2>
+    <p>Poniente runs autonomously. Our systems monitor, adapt, and improve without human intervention.</p>
+</body>
+</html>
+HTMLEOF
+    log "Generated $OUTPUT_DIR/about.html"
+}
+
+# Generate sitemap
+gen_sitemap() {
+    log "Generating sitemap..."
+    cat > "$OUTPUT_DIR/sitemap.xml" << 'XMLEOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://poniente.app/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://poniente.app/about</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://poniente.app/pricing</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://poniente.app/signup</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+</urlset>
+XMLEOF
+    log "Generated $OUTPUT_DIR/sitemap.xml"
+}
+
+# Generate robots.txt
+gen_robots() {
+    log "Generating robots.txt..."
+    cat > "$OUTPUT_DIR/robots.txt" << 'TXTEOF'
+User-agent: *
+Allow: /
+
+Sitemap: https://poniente.app/sitemap.xml
+TXTEOF
+    log "Generated $OUTPUT_DIR/robots.txt"
+}
+
+# Main
+case "${1:-all}" in
+    all)
+        fetch_plans
+        gen_pricing
+        gen_about
+        gen_sitemap
+        gen_robots
+        log "All content generated!"
+        ;;
+    plans) fetch_plans ;;
+    pricing) gen_pricing ;;
+    about) gen_about ;;
+    sitemap) gen_sitemap ;;
+    robots) gen_robots ;;
+    *) echo "Usage: $0 {all|plans|pricing|about|sitemap|robots}" ;;
+esac

@@ -1,8 +1,8 @@
 {
-  "lastClaim": 1770146995360,
+  "lastClaim": 1770150595380,
   "lastRebalance": null,
-  "totalRevenue": 2790,
-  "totalFeesClaimed": 0.045,
+  "totalRevenue": 5580,
+  "totalFeesClaimed": 0.09,
   "morphoCollateral": 0,
   "morphoDebt": 0
 }

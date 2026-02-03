@@ -1,0 +1,27 @@
+# Poniente Cron Jobs
+# Add to crontab: crontab -e
+
+# Every hour - check system health
+0 * * * * /Users/claudio/Restock-app/bin/monitor api >> /Users/claudio/.poniente/health.log 2>&1
+
+# Every day at 7:15 AM - generate static content
+15 7 * * * cd /Users/claudio/Restock-app && bash bin/generate all >> /Users/claudio/.poniente/generate.log 2>&1
+
+# Every day at midnight - backup logs
+0 0 * * * cp /Users/claudio/.openclaw/claude/LOGS/run.log /Users/claudio/.poniente/backups/run-$(date +\%Y\%m\%d).log
+
+# Every hour - check GitHub for updates
+30 * * * * cd /Users/claudio/Restock-app && git fetch origin main >> /Users/claudio/.poniente/git.log 2>&1
+
+# Every 5 minutes - quick health check
+*/5 * * * * curl -s https://api-gilt-xi-28.vercel.app/health > /dev/null || echo "$(date): API down" >> /Users/claudio/.poniente/alerts.log
+
+# Every week - cleanup old logs
+0 0 * * 0 find /Users/claudio/.poniente -name "*.log" -mtime +30 -delete
+
+# Every month - disk usage report
+0 0 1 * * du -sh /Users/claudio/.poniente >> /Users/claudio/.poniente/disk-usage.log
+
+# Note: Run 'crontab -e' to edit and add these
+# To view current crontab: crontab -l
+# To remove: crontab -r
