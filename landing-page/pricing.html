@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Restocka</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 60px 24px; }
+        .header { text-align: center; margin-bottom: 48px; }
+        .header h1 { font-size: 40px; font-weight: 700; margin-bottom: 12px; }
+        .header p { font-size: 18px; color: #64748b; }
+        .pricing-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 24px; 
+            max-width: 900px; 
+            margin: 0 auto; 
+        }
+        .price-card { 
+            background: white; 
+            border-radius: 16px; 
+            padding: 32px; 
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .price-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        }
+        .price-card.popular { 
+            border: 2px solid #0d9488; 
+            position: relative;
+        }
+        .popular-badge { 
+            position: absolute; 
+            top: -12px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            background: #0d9488; 
+            color: white; 
+            padding: 4px 16px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            font-weight: 600; 
+        }
+        .price-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+        .price { font-size: 40px; font-weight: 700; color: #0f172a; margin: 16px 0; }
+        .price span { font-size: 16px; font-weight: 400; color: #64748b; }
+        .price-features { list-style: none; text-align: left; margin: 24px 0; }
+        .price-features li { 
+            padding: 10px 0; 
+            border-bottom: 1px solid #f1f5f9; 
+            font-size: 14px; 
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .price-features li::before { 
+            content: "✓"; 
+            color: #0d9488; 
+            font-weight: 700; 
+        }
+        .btn { 
+            display: block; 
+            width: 100%; 
+            padding: 14px 24px; 
+            border-radius: 10px; 
+            font-size: 15px; 
+            font-weight: 600; 
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary { 
+            background: #0d9488; 
+            color: white; 
+        }
+        .btn-primary:hover { background: #0f766e; }
+        .btn-outline { 
+            background: white; 
+            color: #0f172a; 
+            border: 1px solid #e2e8f0; 
+        }
+        .btn-outline:hover { border-color: #0d9488; color: #0d9488; }
+        .guarantee { 
+            text-align: center; 
+            margin-top: 48px; 
+            padding: 24px; 
+            background: #f0fdfa; 
+            border-radius: 12px;
+        }
+        .guarantee p { font-size: 14px; color: #64748b; }
+        .guarantee strong { color: #0f766e; }
+        
+        @media (max-width: 768px) {
+            .pricing-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 28px; }
+            .price { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Simple, Transparent Pricing</h1>
+            <p>Start free, upgrade when you're ready. No hidden fees.</p>
+        </header>
+        
+        <div class="pricing-grid">
+            <div class="price-card">
+                <h3>Free</h3>
+                <div class="price">$0<span>/forever</span></div>
+                <ul class="price-features">
+                    <li>1 location</li>
+                    <li>5 products</li>
+                    <li>10 orders/month</li>
+                    <li>Basic tracking</li>
+                    <li>Email support</li>
+                </ul>
+                <a href="/signup?plan=free" class="btn btn-outline">Get Started</a>
+            </div>
+            
+            <div class="price-card popular">
+                <div class="popular-badge">Most Popular</div>
+                <h3>Pro</h3>
+                <div class="price">$29<span>/month</span></div>
+                <ul class="price-features">
+                    <li>3 locations</li>
+                    <li>50 products</li>
+                    <li>100 orders/month</li>
+                    <li>Auto-reorder suggestions</li>
+                    <li>Analytics dashboard</li>
+                    <li>Priority support</li>
+                </ul>
+                <a href="/signup?plan=pro" class="btn btn-primary">Start Free Trial</a>
+            </div>
+            
+            <div class="price-card">
+                <h3>Business</h3>
+                <div class="price">$79<span>/month</span></div>
+                <ul class="price-features">
+                    <li>Unlimited locations</li>
+                    <li>Unlimited products</li>
+                    <li>Unlimited orders</li>
+                    <li>Full auto-reorder</li>
+                    <li>Advanced analytics</li>
+                    <li>API access</li>
+                    <li>24/7 dedicated support</li>
+                </ul>
+                <a href="/signup?plan=business" class="btn btn-outline">Contact Sales</a>
+            </div>
+        </div>
+        
+        <div class="guarantee">
+            <p><strong>🛡️ 7-Day Free Trial</strong> on Pro and Business plans. 
+            No credit card required to start. Cancel anytime.</p>
+        </div>
+    </div>
+    
+    <script>
+        // Track pricing page views
+        if (typeof fetch !== 'undefined') {
+            fetch('/api/analytics/pageview', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    page: 'pricing',
+                    timestamp: new Date().toISOString() 
+                }).catch(() => {});
+        }
+        
+        // Handle plan selection
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const url = new URL(btn.href);
+                const plan = url.searchParams.get('plan');
+                if (plan && typeof fetch !== 'undefined') {
+                    fetch('/api/analytics/click', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            event: 'select_plan',
+                            plan: plan,
+                            timestamp: new Date().toISOString() 
+                        }).catch(() => {});
+                }
+            });
+        });
+    </script>
+</body>
+</html>

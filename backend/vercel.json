@@ -1,8 +1,20 @@
 {
-  "regions": ["iad1"],
+  "version": 2,
+  "framework": null,
+  "buildCommand": "npm install",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "devCommand": "npm run dev",
   "functions": {
     "api/**/*.ts": {
-      "runtime": "nodejs22.x"
+      "runtime": "nodejs22.x",
+      "maxDuration": 30
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "api/index.ts"
+    }
+  ]
 }

@@ -1,4 +1,3 @@
 {
-  "runtime": "edge",
-  "entrypoint": "api/vercel.ts"
+  "runtime": "edge"
 }

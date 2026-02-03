@@ -1,11 +1,11 @@
-# RESTOCKA Token Launch Guide
+# Poniente Token Launch Guide
 
 ## Token Overview
 
 | Parameter | Value |
 |-----------|-------|
-| Name | RESTOCKA |
-| Symbol | RESTOCK |
+| Name | Poniente |
+| Symbol | PONIENTE |
 | Decimals | 18 |
 | Initial Supply | 10,000,000 |
 | Chain | Base (recommended for low fees) |
@@ -14,9 +14,9 @@
 
 ```
 ┌────────────────────────────────────────────────────┐
-│              RESTOCKA TOKENOMICS                   │
+│              Poniente TOKENOMICS                   │
 ├────────────────────────────────────────────────────┤
-│ Total Supply:      10,000,000 RESTOCK             │
+│ Total Supply:      10,000,000 PONIENTE             │
 ├────────────────────────────────────────────────────┤
 │ Initial Allocation:                                │
 │   • Liquidity Pool:      40%  (4,000,000)         │
@@ -34,10 +34,10 @@
 
 ## Utility
 
-1. **Staking Discount**: Restaurants stake RESTOCKA for fee discounts
+1. **Staking Discount**: Restaurants stake Poniente for fee discounts
 2. **Governance**: Token holders vote on platform changes
 3. **Fee Revenue**: 50% of trading fees distributed to stakers
-4. **Payment Option**: Restaurants can pay subscriptions in RESTOCKA
+4. **Payment Option**: Restaurants can pay subscriptions in Poniente
 
 ## Launch Options
 
@@ -59,8 +59,8 @@
 ```bash
 # Install Foundry
 curl -L https://foundry.paradigm.xyz | bash
-forge init RestockaToken
-# Edit contracts/RestockaToken.sol
+forge init PonienteToken
+# Edit contracts/PonienteToken.sol
 forge build
 forge create --rpc-url base ...
 ```
@@ -80,7 +80,7 @@ forge create --rpc-url base ...
 3. **Configure Token**
    ```
    Name: Restocka
-   Symbol: RESTOCK
+   Symbol: PONIENTE
    Decimals: 18
    Initial Supply: 10000000
    ```
@@ -97,7 +97,7 @@ forge create --rpc-url base ...
 
 ## Post-Launch Checklist
 
-- [ ] Add liquidity (RESTOCK/ETH or RESTOCK/USDC)
+- [ ] Add liquidity (PONIENTE/ETH or PONIENTE/USDC)
 - [ ] Lock liquidity (via Team Finance or Unicrypt)
 - [ ] List on DEX (Uniswap, PancakeSwap)
 - [ ] Create CoinGecko/CMC listings
@@ -105,10 +105,10 @@ forge create --rpc-url base ...
 - [ ] Configure fee distribution
 - [ ] Announce on X/Telegram
 
-## RESTOCKA Autonomy Loop Integration
+## Poniente Autonomy Loop Integration
 
 ```
-RESTOCK Token ← Restaurants Pay (subscribe/stake)
+PONIENTE Token ← Restaurants Pay (subscribe/stake)
        │
        ├── Stakers earn yield (Morpho)
        │         │
@@ -123,7 +123,7 @@ RESTOCK Token ← Restaurants Pay (subscribe/stake)
 
 ```bash
 # Token Contract
-RESTOCK_TOKEN_ADDRESS=0x...
+PONIENTE_TOKEN_ADDRESS=0x...
 
 # RPC
 BASE_RPC_URL=https://mainnet.base.org
@@ -139,4 +139,4 @@ BASESCAN_API_KEY=xxx
 
 - Token holder tracking: https://basescan.org/token/<address>
 - DEX liquidity: https://dexscreener.com/base/<pair>
-- Price feed: https://coinmarketcap.com/search/?q=RESTOCKA
+- Price feed: https://coinmarketcap.com/search/?q=Poniente

@@ -1,4 +1,4 @@
-# Restocka Autonomy Loop
+# Poniente Autonomy Loop
 
 **Self-funding SaaS. No VCs. No grants. Agents fund themselves.**
 
@@ -7,7 +7,7 @@
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│   RESTOCKA TOKEN → RESTAURANTS PAY → YIELD EARNED               │
+│   Poniente TOKEN → RESTAURANTS PAY → YIELD EARNED               │
 │         │              │                 │                      │
 │         ▼              ▼                 ▼                      │
 │   ┌─────────────────────────────────────────────────┐           │
@@ -51,10 +51,10 @@
 
 | Parameter | Value |
 |-----------|-------|
-| Token | RESTOCKA |
+| Token | Poniente |
 | Launch Platform | Clawnch (free) |
 | Initial Supply | 10M |
-| Restaurant Stake | 100-1000 RESTOCKA |
+| Restaurant Stake | 100-1000 Poniente |
 | Fee | 1-2% of subscription |
 | Holder Rewards | 50% of fees |
 | Treasury | 50% of fees |
@@ -84,7 +84,7 @@ Monthly Revenue (Subscriptions)
 ### Morpho (Yield & Borrowing)
 
 ```solidity
-// Deposit RESTOCKA, earn yield
+// Deposit Poniente, earn yield
 // Borrow USDC against collateral
 ```
 
