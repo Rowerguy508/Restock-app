@@ -1,0 +1,20 @@
+{
+  "name": "restocka-autonomy-loop",
+  "version": "1.0.0",
+  "description": "Self-funding SaaS system for Restocka",
+  "main": "autonomy.js",
+  "scripts": {
+    "start": "node autonomy.js",
+    "dashboard": "bash dashboard.sh",
+    "claim": "bash claim-fees.sh",
+    "status": "bash dashboard.sh"
+  },
+  "dependencies": {
+    "@morpho-org/sdk": "^1.0.0",
+    "ethers": "^6.0.0",
+    "dotenv": "^16.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

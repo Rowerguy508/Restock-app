@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>ai.claudiovott.restocka-autonomy</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/homebrew/bin/node</string>
+        <string>/Users/claudio/Restock-app/autonomy-loop/autonomy.js</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/claudio/Restock-app/autonomy-loop</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/claudio/.openclaw/state/restocka-autonomy.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/claudio/.openclaw/state/restocka-autonomy.err</string>
+    <key>StartInterval</key>
+    <integer>3600</integer>
+</dict>
+</plist>
