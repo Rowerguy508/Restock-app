@@ -1,7 +1,8 @@
 {
-  "framework": null,
-  "buildCommand": "bun build src/vercel.ts --outfile dist/index.js --target node",
-  "installCommand": "bun install",
-  "outputDirectory": "dist",
-  "regions": ["iad1"]
+  "regions": ["iad1"],
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "nodejs22.x"
+    }
+  }
 }
