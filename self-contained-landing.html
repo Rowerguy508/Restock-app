@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Poniente - Restaurant Inventory</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; color: #0f172a; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        
+        /* Header */
+        header { padding: 20px 0; background: white; border-bottom: 1px solid #e2e8f0; }
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: 700; color: #0d9488; text-decoration: none; }
+        .logo span { color: #0f172a; }
+        
+        /* Hero */
+        .hero { padding: 120px 0 80px; text-align: center; background: linear-gradient(180deg, #f0fdfa 0%, #fff 100%); }
+        .hero h1 { font-size: 48px; font-weight: 700; line-height: 1.15; margin-bottom: 16px; }
+        .hero h1 span { color: #0d9488; }
+        .hero p { font-size: 18px; color: #64748b; max-width: 600px; margin: 0 auto 32px; }
+        .btn { display: inline-block; padding: 14px 32px; border-radius: 10px; font-weight: 600; text-decoration: none; cursor: pointer; border: none; }
+        .btn-primary { background: #0d9488; color: white; }
+        .btn-primary:hover { background: #0f766e; }
+        .btn-outline { background: white; color: #0f172a; border: 1px solid #e2e8f0; margin-left: 12px; }
+        
+        /* Features */
+        .features { padding: 80px 0; }
+        .features h2 { text-align: center; font-size: 32px; margin-bottom: 48px; }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .feature { background: #f8fafc; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .feature-icon { font-size: 32px; margin-bottom: 12px; }
+        .feature h3 { font-size: 18px; margin-bottom: 8px; }
+        .feature p { font-size: 14px; color: #64748b; }
+        
+        /* Pricing */
+        .pricing { padding: 80px 0; background: #f8fafc; }
+        .pricing h2 { text-align: center; font-size: 32px; margin-bottom: 12px; }
+        .pricing > .container > p { text-align: center; color: #64748b; margin-bottom: 48px; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 900px; margin: 0 auto; }
+        .price-card { background: white; padding: 32px; border-radius: 16px; border: 1px solid #e2e8f0; text-align: center; }
+        .price-card.popular { border: 2px solid #0d9488; position: relative; }
+        .popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #0d9488; color: white; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .price-card h3 { font-size: 20px; font-weight: 600; }
+        .price { font-size: 40px; font-weight: 700; margin: 16px 0; }
+        .price span { font-size: 16px; font-weight: 400; color: #64748b; }
+        .price-features { list-style: none; text-align: left; margin: 24px 0; }
+        .price-features li { padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        .price-features li::before { content: "✓"; color: #0d9488; margin-right: 10px; font-weight: 700; }
+        
+        /* Signup Form */
+        .signup { padding: 80px 0; }
+        .signup-form { max-width: 480px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; border: 1px solid #e2e8f0; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
+        .form-group input, .form-group select { width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 16px; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #0d9488; }
+        
+        /* Footer */
+        footer { padding: 40px 0; text-align: center; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 14px; }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .features-grid, .pricing-grid { grid-template-columns: 1fr; }
+            .btn-outline { margin-left: 0; margin-top: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="#" class="logo">Poniente</a>
+            <nav>
+                <a href="#features" style="color: #64748b; text-decoration: none; margin-right: 24px; font-size: 14px;">Features</a>
+                <a href="#pricing" style="color: #64748b; text-decoration: none; margin-right: 24px; font-size: 14px;">Pricing</a>
+                <a href="#signup" style="color: #64748b; text-decoration: none; font-size: 14px;">Sign Up</a>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <h1>Never Run Out of<br><span>Ingredients Again</span></h1>
+            <p>Smart inventory management for restaurants. Track stock, auto-reorder, save hours every week.</p>
+            <div>
+                <button class="btn btn-primary" onclick="scrollToSignup()">Start Free Trial</button>
+                <a href="#features" class="btn btn-outline">Learn More</a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="features" id="features">
+        <div class="container">
+            <h2>Everything You Need</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Inventory</h3>
+                    <p>Count stock on your phone anywhere - warehouse, walk-in, delivery.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Auto-Reorder</h3>
+                    <p>Set rules and get smart suggestions when items run low.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h3>Smart Analytics</h3>
+                    <p>Track costs, reduce waste, optimize orders with data.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔔</div>
+                    <h3>Low Stock Alerts</h3>
+                    <p>Never be surprised - get notified before you run out.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">👥</div>
+                    <h3>Team Management</h3>
+                    <p>Multiple locations, multiple users - one dashboard.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🗑️</div>
+                    <h3>Waste Tracking</h3>
+                    <p>Log spoiled items and track waste to reduce costs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2>Simple Pricing</h2>
+            <p>Start free, upgrade when ready.</p>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <h3>Free</h3>
+                    <div class="price">$0<span>/forever</span></div>
+                    <ul class="price-features">
+                        <li>1 location</li>
+                        <li>5 products</li>
+                        <li>10 orders/month</li>
+                        <li>Basic tracking</li>
+                        <li>Email support</li>
+                    </ul>
+                    <button class="btn btn-outline" style="width:100%" onclick="selectPlan('FREE')">Get Started</button>
+                </div>
+                <div class="price-card popular">
+                    <div class="popular-badge">Most Popular</div>
+                    <h3>Pro</h3>
+                    <div class="price">$29<span>/month</span></div>
+                    <ul class="price-features">
+                        <li>3 locations</li>
+                        <li>50 products</li>
+                        <li>100 orders/month</li>
+                        <li>Auto-reorder suggestions</li>
+                        <li>Analytics dashboard</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <button class="btn btn-primary" style="width:100%" onclick="selectPlan('PRO')">Start Free Trial</button>
+                </div>
+                <div class="price-card">
+                    <h3>Business</h3>
+                    <div class="price">$79<span>/month</span></div>
+                    <ul class="price-features">
+                        <li>Unlimited locations</li>
+                        <li>Unlimited products</li>
+                        <li>Unlimited orders</li>
+                        <li>Full auto-reorder</li>
+                        <li>Advanced analytics</li>
+                        <li>API access</li>
+                    </ul>
+                    <button class="btn btn-outline" style="width:100%" onclick="selectPlan('BUSINESS')">Contact Sales</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="signup" id="signup">
+        <div class="container">
+            <div class="signup-form">
+                <h2 style="text-align:center;margin-bottom:24px">Create Your Account</h2>
+                <form id="signupForm" onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label>Restaurant Name</label>
+                        <input type="text" id="orgName" required placeholder="My Restaurant">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email" required placeholder="you@restaurant.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Plan</label>
+                        <select id="plan">
+                            <option value="FREE">Free - $0/month</option>
+                            <option value="PRO" selected>Pro - $29/month</option>
+                            <option value="BUSINESS">Business - $79/month</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%">Create Account</button>
+                </form>
+                <p id="result" style="margin-top:16px;text-align:center;font-size:14px"></p>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>© 2026 Poniente. Restaurant inventory management.</p>
+        </div>
+    </footer>
+    
+    <script>
+        function scrollToSignup() { document.getElementById('signup').scrollIntoView({behavior:'smooth'}); }
+        function selectPlan(plan) { document.getElementById('plan').value = plan; scrollToSignup(); }
+        
+        async function handleSignup(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.textContent = 'Creating...';
+            btn.disabled = true;
+            
+            // Store in localStorage (demo mode)
+            const org = {
+                id: 'org_' + Date.now(),
+                name: document.getElementById('orgName').value,
+                email: document.getElementById('email').value,
+                plan: document.getElementById('plan').value,
+                createdAt: new Date().toISOString(),
+                trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+            };
+            
+            // Save to localStorage
+            const orgs = JSON.parse(localStorage.getItem('poniente_orgs') || '[]');
+            orgs.push(org);
+            localStorage.setItem('poniente_orgs', JSON.stringify(orgs));
+            localStorage.setItem('poniente_current_org', org.id);
+            
+            document.getElementById('result').innerHTML = '<span style="color:#22c55e">✓ Account created! (Demo mode)</span><br><small>Organization ID: ' + org.id + '</small>';
+            btn.textContent = 'Create Account';
+            btn.disabled = false;
+            
+            console.log('Organization created:', org);
+        }
+    </script>
+</body>
+</html>

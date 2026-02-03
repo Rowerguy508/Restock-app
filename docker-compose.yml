@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    env_file:
+      - .env.production
+    depends_on:
+      - db
+    networks:
+      - poniente-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./restocka-manager
+      dockerfile: Dockerfile
+    ports:
+      - "4173:80"
+    depends_on:
+      - api
+    networks:
+      - poniente-network
+    restart: unless-stopped
+
+  db:
+    image: supabase/postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./supabase/migrations:/migrations
+    networks:
+      - poniente-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - poniente-network
+    restart: unless-stopped
+
+networks:
+  poniente-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

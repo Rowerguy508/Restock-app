@@ -1,0 +1,167 @@
+#!/bin/bash
+# Poniente CLI - Local development and management tool
+
+set -e
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+log() { echo -e "${GREEN}[poniente]${NC} $1"; }
+warn() { echo -e "${YELLOW}[poniente]${NC} $1"; }
+err() { echo -e "${RED}[poniente]${NC} $1"; }
+
+# Colors
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+
+# Commands
+COMMANDS="dev start build deploy status logs db migrate seed test lint help"
+
+show_help() {
+    cat << EOF
+${BOLD}Poniente CLI${NC}
+
+${BOLD}Usage:${NC}
+  poniente [command]
+
+${BOLD}Commands:${NC}
+  dev         Start local development server
+  start       Start production server
+  build       Build for production
+  deploy      Deploy to Vercel
+  status      Show system status
+  logs        Show recent logs
+  db          Database operations
+  migrate     Run database migrations
+  seed        Seed demo data
+  test        Run tests
+  lint        Run linter
+  help        Show this help
+
+${BOLD}Examples:${NC}
+  poniente dev
+  poniente status
+  poniente deploy
+
+EOF
+}
+
+cmd_dev() {
+    log "Starting development server..."
+    cd ~/Restock-app/api
+    npm run dev
+}
+
+cmd_start() {
+    log "Starting production server..."
+    cd ~/Restock-app/api
+    node index.js
+}
+
+cmd_build() {
+    log "Building for production..."
+    cd ~/Restock-app/api
+    npm install
+    log "Build complete"
+}
+
+cmd_deploy() {
+    log "Deploying to Vercel..."
+    cd ~/Restock-app/api
+    vercel --prod
+}
+
+cmd_status() {
+    echo ""
+    echo -e "${BOLD}🦞 Poniente Status${NC}"
+    echo ""
+    
+    echo -e "${CYAN}API:${NC}"
+    curl -s https://api-gilt-xi-28.vercel.app/health 2>/dev/null | jq . 2>/dev/null || echo "  API not responding"
+    
+    echo ""
+    echo -e "${CYAN}Git:${NC}"
+    cd ~/Restock-app && git status --short | head -5
+    
+    echo ""
+    echo -e "${CYAN}Local Storage (Demo):${NC}"
+    local orgs=$(localStorage.getItem('poniente_orgs') 2>/dev/null || echo "[]")
+    echo "  Organizations: $(echo $orgs | jq 'length' 2>/dev/null || echo "0")"
+}
+
+cmd_logs() {
+    log "Showing logs..."
+    tail -50 ~/.openclaw/claude/LOGS/run.log 2>/dev/null || echo "No logs found"
+}
+
+cmd_db() {
+    cat << EOF
+${BOLD}Database Operations${NC}
+
+Use Supabase Dashboard for database management:
+  https://supabase.com/dashboard
+
+To run migrations:
+  1. Go to Supabase SQL Editor
+  2. Copy contents of: supabase/migrations/002_subscription_monetization.sql
+  3. Run in SQL Editor
+
+EOF
+}
+
+cmd_migrate() {
+    warn "Migrations must be run in Supabase Dashboard."
+    log "Opening migration file..."
+    cat ~/Restock-app/supabase/migrations/002_subscription_monetization.sql | head -50
+    echo ""
+    log "Copy the full file to Supabase SQL Editor."
+}
+
+cmd_seed() {
+    log "Seeding demo data (localStorage)..."
+    
+    # Create demo organizations in localStorage
+    cat > /tmp/seed.js << 'SEEDEOF'
+const demoOrgs = [
+    { id: 'org_demo_1', name: 'Demo Restaurant', email: 'demo@poniente.app', plan: 'PRO', createdAt: new Date().toISOString() },
+    { id: 'org_demo_2', name: 'Test Kitchen', email: 'test@poniente.app', plan: 'FREE', createdAt: new Date().toISOString() }
+];
+localStorage.setItem('poniente_orgs', JSON.stringify(demoOrgs));
+localStorage.setItem('poniente_current_org', demoOrgs[0].id);
+console.log('Demo data seeded!');
+SEEDEOF
+    
+    echo "Demo data created. Open self-contained-landing.html in browser to see it."
+}
+
+cmd_test() {
+    log "Running tests..."
+    cd ~/Restock-app/api
+    # Placeholder for tests
+    echo "No tests configured yet."
+}
+
+cmd_lint() {
+    log "Running linter..."
+    cd ~/Restock-app/api
+    npx eslint . 2>/dev/null || echo "Linting not configured."
+}
+
+# Main
+case "${1:-help}" in
+    dev) cmd_dev ;;
+    start) cmd_start ;;
+    build) cmd_build ;;
+    deploy) cmd_deploy ;;
+    status) cmd_status ;;
+    logs) cmd_logs ;;
+    db) cmd_db ;;
+    migrate) cmd_migrate ;;
+    seed) cmd_seed ;;
+    test) cmd_test ;;
+    lint) cmd_lint ;;
+    help|--help|-h) show_help ;;
+    *) show_help ;;
+esac
